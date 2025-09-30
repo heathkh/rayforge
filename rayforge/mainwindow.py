@@ -10,6 +10,8 @@ from .config import config, config_mgr
 from .machine.driver.driver import DeviceStatus, DeviceState
 from .machine.driver.dummy import NoDeviceDriver
 from .machine.models.machine import Machine
+from .core.doc import Doc, WorkPiece
+from .core.geo.geometry import Geometry
 from .core.group import Group
 from .core.item import DocItem
 from .core.layer import Layer
@@ -37,6 +39,7 @@ from .actions import ActionManager
 from .main_menu import MainMenu
 from .workbench.view_mode_cmd import ViewModeCmd
 from .workbench.canvas3d import Canvas3D, initialized as canvas3d_initialized
+from .tools.material_test_dialog import MaterialTestDialog
 from .doceditor.ui import file_dialogs, import_handler
 
 
@@ -1066,6 +1069,42 @@ class MainWindow(Adw.ApplicationWindow):
             return
         dialog = MachineSettingsDialog(machine=config.machine)
         dialog.present(self)
+
+    def on_show_material_test(self, action, param):
+        """Shows the material test generator dialog and handles the result."""
+        dialog = MaterialTestDialog(parent=self, doc_editor=self.doc_editor)
+        dialog.ops_generated.connect(self._on_material_test_generated)
+        dialog.present()
+
+    def _on_material_test_generated(self, sender, ops: Ops):
+        """Callback to load the generated material test ops."""
+        geo = ops.to_geometry()
+        if geo.is_empty():
+            return
+
+        # Normalize the geometry and set the workpiece size
+        x1, y1, x2, y2 = geo.rect()
+        width = x2 - x1
+        height = y2 - y1
+
+        if width <= 0 or height <= 0:
+            return
+
+        # Create a matrix to normalize the geometry
+        norm_matrix = Matrix.translation(-x1, -y1).pre_scale(1 / width, 1 / height)
+        geo.transform(norm_matrix.to_4x4_numpy())
+
+        new_layer = Layer(_("Material Test"))
+        default_step = create_contour_step()
+        new_layer.workflow.add_step(default_step)
+
+        self.doc_editor.doc.add_layer(new_layer)
+        workpiece = WorkPiece(name="Material Test", vectors=geo)
+        workpiece.set_size(width, height)
+        # Center the workpiece in the workspace
+        ws_width, ws_height = self.surface.get_size_mm()
+        workpiece.pos = (ws_width / 2 - width / 2, ws_height / 2 - height / 2)
+        new_layer.add_workpiece(workpiece)
 
     def _on_preferences_dialog_closed(self, dialog):
         logger.debug("Preferences dialog closed")

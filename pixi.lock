@@ -8842,7 +8842,7 @@ packages:
   timestamp: 1746622805379
 - pypi: ./
   name: rayforge
-  version: 0.20.2.post48+git.f12659dd.dirty
+  version: 0.22.post53+git.77af773c.dirty
   sha256: 056490b441f06e48d19644aff0bdb270c03fad62478996380e2c6d6560a43a3d
   requires_dist:
   - pytest ; extra == 'test'

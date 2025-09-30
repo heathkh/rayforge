@@ -120,6 +120,9 @@ class ActionManager:
         self._add_action("spread-v", self.on_spread_v)
         self._add_action("layout-pixel-perfect", self.on_layout_pixel_perfect)
 
+        # Tools Actions
+        self._add_action("material_test", self.win.on_show_material_test)
+
         # Machine Control Actions
         self._add_action("home", self.win.on_home_clicked)
         self._add_action("frame", self.win.on_frame_clicked)

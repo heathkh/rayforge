@@ -123,6 +123,13 @@ class MainMenu(Gio.Menu):
         arrange_menu.append_section(None, layout_group)
         self.append_submenu(_("Arrange"), arrange_menu)
 
+        # Tools Menu
+        tools_menu = Gio.Menu()
+        tools_group = Gio.Menu()
+        tools_group.append(_("Material Test Generator…"), "win.material_test")
+        tools_menu.append_section(None, tools_group)
+        self.append_submenu(_("_Tools"), tools_menu)
+
         # Machine Menu
         machine_menu = Gio.Menu()
         jog_group = Gio.Menu()
