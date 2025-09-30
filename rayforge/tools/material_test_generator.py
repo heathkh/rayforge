@@ -25,42 +25,44 @@ def _text_to_ops(
     power: float,
     speed: float,
 ) -> None:
-    # Create a temporary surface to calculate text extents
-    temp_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 0, 0)
+    # Create a temporary surface to generate text path
+    temp_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 1, 1)
     temp_cr = cairo.Context(temp_surface)
     temp_cr.select_font_face(font_face, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
     temp_cr.set_font_size(font_size)
+
+    # Get text metrics
     extents = temp_cr.text_extents(text)
 
-    # Create a new surface that is large enough for the text with a margin
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(extents.width) + 4, int(extents.height) + 4)
-    cr = cairo.Context(surface)
-    cr.select_font_face(font_face, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-    cr.set_font_size(font_size)
-    cr.new_path()
-    # Move the path to the start, considering the text's bearing
-    cr.move_to(-extents.x_bearing + 2, -extents.y_bearing + 2)
-    cr.text_path(text)
-    path_data = cr.copy_path()
+    # Create the text path at origin
+    temp_cr.new_path()
+    temp_cr.move_to(0, 0)
+    temp_cr.text_path(text)
+    path_data = temp_cr.copy_path()
 
     ops.add(SetPowerCommand(power))
     ops.add(SetCutSpeedCommand(speed))
 
+    # Transform coordinates: just add to position directly
+    # Cairo text is already in the correct orientation for our coordinate system
     for path_type, points in path_data:
         if path_type == cairo.PATH_MOVE_TO:
             px, py = points[0], points[1]
-            ops.add(MoveToCommand((x + px, y - py, 0.0)))
+            ops.add(MoveToCommand((x + px, y + py, 0.0)))
         elif path_type == cairo.PATH_LINE_TO:
             px, py = points[0], points[1]
-            ops.add(LineToCommand((x + px, y - py, 0.0)))
+            ops.add(LineToCommand((x + px, y + py, 0.0)))
         elif path_type == cairo.PATH_CURVE_TO:
             p1x, p1y, p2x, p2y, p3x, p3y = points
-            c1 = (x + p1x, y - p1y, 0.0)
-            c2 = (x + p2x, y - p2y, 0.0)
-            end = (x + p3x, y - p3y, 0.0)
+            c1 = (x + p1x, y + p1y, 0.0)
+            c2 = (x + p2x, y + p2y, 0.0)
+            end = (x + p3x, y + p3y, 0.0)
             ops.bezier_to(c1, c2, end)
         elif path_type == cairo.PATH_CLOSE_PATH:
+            ops.close_path
             pass
+        else:
+            raise NotImplementedError(f"Need to implement path type: {path_type}")
 
 def generate_material_test_ops(
     test_type: str,  # "Engrave" or "Cut"
