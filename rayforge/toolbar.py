@@ -1,5 +1,5 @@
 import logging
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from blinker import Signal
 from .icons import get_icon
 from .undo.ui.undo_button import UndoButton, RedoButton
@@ -92,15 +92,17 @@ class MainToolbar(Gtk.Box):
         self.append(self.show_travel_button)
 
         # Add a button to open the 3D preview window.
-        view_3d_button = Gtk.ToggleButton(child=get_icon("3d-symbolic"))
-        view_3d_button.set_action_name("win.show_3d_view")
+        # Note: View modes are now controlled via menu and F9/F10/F11 hotkeys
+        view_3d_button = Gtk.Button(child=get_icon("3d-symbolic"))
+        view_3d_button.set_action_name("win.view_mode")
+        view_3d_button.set_action_target_value(GLib.Variant.new_string("3d"))
         view_3d_button.set_sensitive(canvas3d_initialized)
         if not canvas3d_initialized:
             view_3d_button.set_tooltip_text(
                 _("3D view disabled (missing dependencies like PyOpenGL)")
             )
         else:
-            view_3d_button.set_tooltip_text(_("Show 3D Preview"))
+            view_3d_button.set_tooltip_text(_("Show 3D Preview (F10)"))
         self.append(view_3d_button)
 
         # Add a button to toggle tab visibility.

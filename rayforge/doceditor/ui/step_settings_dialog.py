@@ -82,82 +82,91 @@ class StepSettingsDialog(Adw.Window):
                     )
                     page.add(widget)
 
-        # 2. General Settings
-        general_group = Adw.PreferencesGroup(title=_("General Settings"))
-        page.add(general_group)
+        # 2. General Settings (check if producer widget wants them shown)
+        show_general = True
+        if producer_dict:
+            producer_name = producer_dict.get("type")
+            if producer_name:
+                WidgetClass = WIDGET_REGISTRY.get(producer_name)
+                if WidgetClass and hasattr(WidgetClass, 'show_general_settings'):
+                    show_general = WidgetClass.show_general_settings
 
-        # Power Slider
-        power_row = Adw.ActionRow(title=_("Power (%)"))
-        power_adjustment = Gtk.Adjustment(
-            upper=100, step_increment=1, page_increment=10
-        )
-        power_scale = Gtk.Scale(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            adjustment=power_adjustment,
-            digits=0,
-            draw_value=True,
-        )
-        max_power = (
-            step.laser_dict.get("max_power", 1000) if step.laser_dict else 1000
-        )
-        power_percent = (step.power / max_power * 100) if max_power > 0 else 0
-        power_adjustment.set_value(power_percent)
-        power_scale.set_size_request(300, -1)
-        power_scale.connect(
-            "value-changed",
-            lambda scale: self._debounce(self.on_power_changed, scale),
-        )
-        power_row.add_suffix(power_scale)
-        general_group.add(power_row)
+        if show_general:
+            general_group = Adw.PreferencesGroup(title=_("General Settings"))
+            page.add(general_group)
 
-        # Add a spin row for cut speed
-        cut_speed_adjustment = Gtk.Adjustment(
-            lower=0,
-            upper=max_cut_speed,
-            step_increment=10,
-            page_increment=100,
-        )
-        cut_speed_row = Adw.SpinRow(
-            title=_("Cut Speed"),
-            subtitle=_("Max: {max_speed}"),
-            adjustment=cut_speed_adjustment,
-        )
-        self.cut_speed_helper = UnitSpinRowHelper(
-            spin_row=cut_speed_row,
-            quantity="speed",
-            max_value_in_base=max_cut_speed,
-        )
-        self.cut_speed_helper.set_value_in_base_units(step.cut_speed)
-        self.cut_speed_helper.changed.connect(self.on_cut_speed_changed)
-        general_group.add(cut_speed_row)
+            # Power Slider
+            power_row = Adw.ActionRow(title=_("Power (%)"))
+            power_adjustment = Gtk.Adjustment(
+                upper=100, step_increment=1, page_increment=10
+            )
+            power_scale = Gtk.Scale(
+                orientation=Gtk.Orientation.HORIZONTAL,
+                adjustment=power_adjustment,
+                digits=0,
+                draw_value=True,
+            )
+            max_power = (
+                step.laser_dict.get("max_power", 1000) if step.laser_dict else 1000
+            )
+            power_percent = (step.power / max_power * 100) if max_power > 0 else 0
+            power_adjustment.set_value(power_percent)
+            power_scale.set_size_request(300, -1)
+            power_scale.connect(
+                "value-changed",
+                lambda scale: self._debounce(self.on_power_changed, scale),
+            )
+            power_row.add_suffix(power_scale)
+            general_group.add(power_row)
 
-        # Add a spin row for travel speed
-        travel_speed_adjustment = Gtk.Adjustment(
-            lower=0,
-            upper=max_travel_speed,
-            step_increment=10,
-            page_increment=100,
-        )
-        travel_speed_row = Adw.SpinRow(
-            title=_("Travel Speed"),
-            subtitle=_("Max: {max_speed}"),
-            adjustment=travel_speed_adjustment,
-        )
-        self.travel_speed_helper = UnitSpinRowHelper(
-            spin_row=travel_speed_row,
-            quantity="speed",
-            max_value_in_base=max_travel_speed,
-        )
-        self.travel_speed_helper.set_value_in_base_units(step.travel_speed)
-        self.travel_speed_helper.changed.connect(self.on_travel_speed_changed)
-        general_group.add(travel_speed_row)
+            # Add a spin row for cut speed
+            cut_speed_adjustment = Gtk.Adjustment(
+                lower=0,
+                upper=max_cut_speed,
+                step_increment=10,
+                page_increment=100,
+            )
+            cut_speed_row = Adw.SpinRow(
+                title=_("Cut Speed"),
+                subtitle=_("Max: {max_speed}"),
+                adjustment=cut_speed_adjustment,
+            )
+            self.cut_speed_helper = UnitSpinRowHelper(
+                spin_row=cut_speed_row,
+                quantity="speed",
+                max_value_in_base=max_cut_speed,
+            )
+            self.cut_speed_helper.set_value_in_base_units(step.cut_speed)
+            self.cut_speed_helper.changed.connect(self.on_cut_speed_changed)
+            general_group.add(cut_speed_row)
 
-        # Add a switch for air assist
-        air_assist_row = Adw.SwitchRow()
-        air_assist_row.set_title(_("Air Assist"))
-        air_assist_row.set_active(step.air_assist)
-        air_assist_row.connect("notify::active", self.on_air_assist_changed)
-        general_group.add(air_assist_row)
+            # Add a spin row for travel speed
+            travel_speed_adjustment = Gtk.Adjustment(
+                lower=0,
+                upper=max_travel_speed,
+                step_increment=10,
+                page_increment=100,
+            )
+            travel_speed_row = Adw.SpinRow(
+                title=_("Travel Speed"),
+                subtitle=_("Max: {max_speed}"),
+                adjustment=travel_speed_adjustment,
+            )
+            self.travel_speed_helper = UnitSpinRowHelper(
+                spin_row=travel_speed_row,
+                quantity="speed",
+                max_value_in_base=max_travel_speed,
+            )
+            self.travel_speed_helper.set_value_in_base_units(step.travel_speed)
+            self.travel_speed_helper.changed.connect(self.on_travel_speed_changed)
+            general_group.add(travel_speed_row)
+
+            # Add a switch for air assist
+            air_assist_row = Adw.SwitchRow()
+            air_assist_row.set_title(_("Air Assist"))
+            air_assist_row.set_active(step.air_assist)
+            air_assist_row.connect("notify::active", self.on_air_assist_changed)
+            general_group.add(air_assist_row)
 
         # 3. Path Post-Processing Transformers
         if self.step.opstransformers_dicts:

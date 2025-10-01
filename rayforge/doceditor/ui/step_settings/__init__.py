@@ -2,6 +2,7 @@ from typing import Dict, Type
 from .base import StepComponentSettingsWidget
 from .depth_engraver import DepthEngraverSettingsWidget
 from .frame import FrameProducerSettingsWidget
+from .material_test import MaterialTestGridSettingsWidget
 from .multipass import MultiPassSettingsWidget
 from .optimize import OptimizeSettingsWidget
 from .shrinkwrap import ShrinkWrapProducerSettingsWidget
@@ -12,6 +13,7 @@ from .smooth import SmoothSettingsWidget
 WIDGET_REGISTRY: Dict[str, Type[StepComponentSettingsWidget]] = {
     "DepthEngraver": DepthEngraverSettingsWidget,
     "FrameProducer": FrameProducerSettingsWidget,
+    "MaterialTestGridProducer": MaterialTestGridSettingsWidget,
     "MultiPassTransformer": MultiPassSettingsWidget,
     "Optimize": OptimizeSettingsWidget,
     "ShrinkWrapProducer": ShrinkWrapProducerSettingsWidget,
@@ -23,6 +25,7 @@ __all__ = [
     "WIDGET_REGISTRY",
     "DepthEngraverSettingsWidget",
     "FrameProducerSettingsWidget",
+    "MaterialTestGridSettingsWidget",
     "MultiPassSettingsWidget",
     "OptimizeSettingsWidget",
     "ShrinkWrapProducerSettingsWidget",

@@ -92,6 +92,15 @@ class Step(DocItem, ABC):
             return cast(Workflow, self.parent)
         return None
 
+    @property
+    def show_general_settings(self) -> bool:
+        """
+        Returns whether general settings (power, speed, air assist) should be
+        shown in the settings dialog. Override in subclasses to hide these
+        settings when they don't apply.
+        """
+        return True
+
     def set_visible(self, visible: bool):
         self.visible = visible
         self.visibility_changed.send(self)
