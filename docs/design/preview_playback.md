@@ -79,7 +79,6 @@ Canvas redraws
 - Tracks current power and speed for each step
 - Calculates min/max speed range across all operations
 - Stores immutable state snapshots
-- Only includes commands with endpoints
 
 **Timeline Structure**:
 ```python
@@ -157,13 +156,10 @@ Shows current laser position:
 **Playback Behavior**:
 - **Auto-start**: Begins playing when preview mode entered
 - **Adaptive speed**: Completes full playback in 5 seconds
-- **Frame rate**: 24 FPS (42ms per frame)
-- **Step increment**: Calculated as `step_count / (5 seconds * 24 FPS)`
+- **Frame rate**: 24 FPS
 
 **Configuration**:
 - `target_duration_sec`: Default 5.0 seconds for full playback
-- `loop_enabled`: Default True
-- `step_increment`: Auto-calculated based on step count
 
 ### 4. WorkSurface Integration
 
@@ -252,27 +248,9 @@ When settings change that affect generated ops:
 4. **Action**: Regenerate preview with new ops
 5. **Playback**: Reset to beginning, resume if was playing
 
-**Applies to**:
-- Material test parameter changes
-- Step settings modifications
-- Workflow changes
-- Any ops-affecting updates
-
 ## Visual Design
 
 ### Color Scheme
-
-| Element | Color | Transparency | Purpose |
-|---------|-------|--------------|---------|
-| Slowest ops | Blue (0,0,1) | Power-based | Heatmap minimum |
-| Mid-slow ops | Cyan (0,1,1) | Power-based | Heatmap 25% |
-| Mid ops | Green (0,1,0) | Power-based | Heatmap 50% |
-| Mid-fast ops | Yellow (1,1,0) | Power-based | Heatmap 75% |
-| Fastest ops | Red (1,0,0) | Power-based | Heatmap maximum |
-| Laser head | Red (1,0,0) | 80% | Position indicator |
-| Line width | - | - | 0.1mm |
-
-### Heatmap Gradient
 
 Five-segment linear gradient:
 1. **0-25%**: Blue → Cyan
@@ -281,14 +259,6 @@ Five-segment linear gradient:
 4. **75-100%**: Yellow → Red
 
 Normalized to actual speed range of operations (not fixed values).
-
-### Laser Head Indicator
-
-- Crosshair: 6mm lines (horizontal and vertical)
-- Circle: 3mm radius
-- Center dot: 0.5mm radius
-- Color: Red with 80% opacity
-- Line width: 0.2mm
 
 ## Usage Workflow
 
@@ -307,26 +277,6 @@ Normalized to actual speed range of operations (not fixed values).
    - Let loop for continuous observation
 5. **Exit**: Press F5 (2D) or F6 (3D) to switch views
 
-### Material Test Preview
-
-1. Open Material Test Grid Settings
-2. Press F7 to preview
-3. **Observe**:
-   - Test squares executed in risk order (fastest first)
-   - Speed differences via heatmap
-   - Power differences via transparency
-   - Exact execution sequence
-4. Adjust settings as needed
-5. Preview auto-updates with changes
-
-### Settings Workflow
-
-1. **Enter preview mode** (F7)
-2. **Open step settings** dialog
-3. **Modify parameters** (speed, power, etc.)
-4. **Preview auto-refreshes** on each change
-5. **Playback resets** and resumes
-6. **Exit preview** when satisfied (F5)
 
 ## Design Decisions
 
@@ -353,97 +303,7 @@ Normalized to actual speed range of operations (not fixed values).
 - Complements power transparency
 - Intuitive: hot colors = fast, cool colors = slow
 
-### Why 24 FPS?
 
-**Alternatives**:
-- 30 FPS (33ms): Smoother but higher CPU
-- 60 FPS (17ms): Overkill for preview
-- 15 FPS (67ms): Too choppy
-
-**Chosen: 24 FPS (42ms)**
-
-**Rationale**:
-- Standard "cinematic" frame rate
-- Smooth enough for observation
-- Low CPU overhead
-- Good slider responsiveness
-
-### Why 5 Second Target Duration?
-
-**Rationale**:
-- Long enough to observe
-- Short enough to loop quickly
-- Adaptable via step increment
-- Works for both small and large jobs
-
-### Why Fractional Steps?
-
-**Problem**: Fixed step increment causes jumpy playback on large jobs
-
-**Solution**: Floating-point slider value with fractional increments
-- Small jobs: increment ≈ 1.0 (one step per frame)
-- Large jobs: increment > 1.0 (skip steps for smooth playback)
-- Example: 600 steps / 300 frames = 2.0 steps per frame
-
-### Why Auto-Refresh?
-
-**Rationale**:
-- Immediate visual feedback on changes
-- Reduces need to manually restart preview
-- Natural workflow: adjust → observe → adjust
-- Prevents confusion from stale preview
-
-## Performance
-
-### Optimization Strategies
-
-1. **Lazy Rendering**: Only draw when step changes
-2. **Step Increment Adaptation**: Skip steps on large jobs
-3. **Canvas Element**: Leverages existing canvas infrastructure
-4. **Immutable State**: Copy state once per step
-5. **Fixed Frame Rate**: Predictable CPU usage
-
-### Scalability
-
-**Current limits** (estimated):
-- **Steps**: Handles ~100,000 steps
-- **Memory**: ~32 bytes per step + Cairo rendering
-- **Render time**: <16ms for typical jobs at 24 FPS
-
-**For very large jobs** (>100k steps):
-- Step increment automatically increases
-- Maintains 5-second target duration
-- Smooth playback regardless of job size
-
-## Future Enhancements
-
-### Potential Additions
-
-1. **Playback Controls**:
-   - Speed multiplier (0.5x, 1x, 2x)
-   - Step backward button
-   - Jump to start/end buttons
-
-2. **Information Overlay**:
-   - Current speed/power display
-   - Position coordinates
-   - Time elapsed/remaining
-   - Layer name
-
-3. **Configuration**:
-   - Adjustable target duration
-   - Frame rate selection
-   - Loop enable/disable toggle
-
-4. **Export**:
-   - Save as video (MP4, WebM)
-   - Export image sequence
-   - Generate animated GIF
-
-5. **Enhanced Visualization**:
-   - Laser beam diameter
-   - Kerf visualization
-   - Material removal simulation
 
 ## Related Files
 

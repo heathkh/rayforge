@@ -80,8 +80,7 @@ class MaterialTestGridSettingsWidget(
         self._build_power_range(producer)
         self._build_grid_dimensions(producer)
         self._build_shape_size(producer)
-        self._build_spacing(producer)
-        self._build_labels_toggle(producer)
+        self._build_spacing(producer)        
 
     def _build_preset_selector(self):
         """Builds the preset dropdown."""
@@ -96,7 +95,13 @@ class MaterialTestGridSettingsWidget(
             subtitle=_("Load common test configurations"),
         )
         preset_row.add_suffix(preset_combo)
-        self.add(preset_row)
+
+        # Create a separate group for presets
+        preset_group = Adw.PreferencesGroup(
+            title=_("Presets")
+        )
+        preset_group.add(preset_row)
+        self.add(preset_group)
 
         preset_combo.connect("changed", self._on_preset_changed)
         self.preset_combo = preset_combo

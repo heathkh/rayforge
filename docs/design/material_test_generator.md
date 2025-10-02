@@ -165,27 +165,21 @@ Presets default to "(None)" - only apply when explicitly selected.
 ### Why Not Subclass WorkPiece?
 - ✅ Cleaner: Uses existing ImportSource mechanism
 - ✅ Standard: No new core data model types
-- ✅ Shareable: Multiple tests can reference same ImportSource
 - ✅ Serialization: Leverages existing patterns
 
 ### Why Separate Layer Type?
 - ✅ Clear intent: Dedicated layer for material testing
 - ✅ Protection: Prevents accidental mixing with regular workpieces
 - ✅ UI distinction: Different icon and behavior
-- ✅ Future expansion: Room for material test-specific features
 
-### Why Direct Ops Generation?
-- ✅ No rendering needed: Faster workflow
-- ✅ Parametric: Fully editable via settings
-- ✅ Precise: Mathematical generation vs. pixel tracing
-- ✅ Scalable: Can adapt to any size without quality loss
+
 
 ## Future Enhancements
 
-Potential additions enabled by this architecture:
-- Different test patterns (circles, lines, diagonal hatching)
-- Variable spacing patterns (logarithmic, exponential)
-- Multi-material comparison tests
+- Advanced preset management UI (save load custom presets)
 - Test result database integration
-- Advanced preset management UI
-- Export results to CSV/JSON
+- QR code added to pattern encoding the machine id and the material id of that test run
+- Automated image analysis of a picture of the laser cut/engraved test grid determines the best cut / engrave settings which are automatically linked to corresponding machine and material ids via the QR code added to the test grid pattern. 
+- Automated wizard to help you quickly fine-tune settings for a particular machine and material using a bisection-search strategy that runs a series of smaller test-grids dynamically chosen based on the results of past test-grids to more efficiently identify the best settings.
+
+
