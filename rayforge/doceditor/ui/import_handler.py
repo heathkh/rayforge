@@ -108,7 +108,8 @@ def start_interactive_import(win: "MainWindow", editor: "DocEditor"):
     if active_layer and isinstance(active_layer, MaterialTestLayer):
         from gi.repository import Adw
         toast = Adw.Toast.new(
-            _("Cannot import files into a Material Test layer. Please select a different layer.")
+            _("Cannot import files into a Material Test layer. "
+              "Please select a different layer.")
         )
         toast.set_timeout(4)
         win.toast_overlay.add_toast(toast)

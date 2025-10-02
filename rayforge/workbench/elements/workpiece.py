@@ -723,10 +723,9 @@ class WorkPieceView(CanvasElement):
             # context, leaving it Y-UP for the next drawing operation.
             super().draw(ctx)
 
-        # Draw Ops Surfaces (hide during preview mode)        
+        # Draw Ops Surfaces (hide during preview mode)
         if self.canvas.is_preview_mode():
             return
-    
         for step_uid, surface_tuple in self._ops_surfaces.items():
             if (
                 not self._ops_visibility.get(step_uid, True)

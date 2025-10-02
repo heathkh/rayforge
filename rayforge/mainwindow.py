@@ -12,8 +12,7 @@ from .config import config, config_mgr
 from .machine.driver.driver import DeviceStatus, DeviceState
 from .machine.driver.dummy import NoDeviceDriver
 from .machine.models.machine import Machine
-from .core.doc import Doc, WorkPiece
-from .core.geo.geometry import Geometry
+from .core.doc import WorkPiece
 from .core.group import Group
 from .core.item import DocItem
 from .core.layer import Layer
@@ -47,7 +46,7 @@ from .actions import ActionManager
 from .main_menu import MainMenu
 from .workbench.view_mode_cmd import ViewModeCmd
 from .workbench.canvas3d import Canvas3D, initialized as canvas3d_initialized
-from .image.material_test_renderer import MaterialTestRenderer
+from .image.material_test_grid_renderer import MaterialTestRenderer
 from .doceditor.ui import file_dialogs, import_handler
 
 
@@ -1058,7 +1057,6 @@ class MainWindow(Adw.ApplicationWindow):
 
         # Update sensitivity for 3D view actions
         is_3d_view_active = self.view_stack.get_visible_child_name() == "3d"
-        can_show_3d = canvas3d_initialized and not task_mgr.has_tasks()
         # Note: view_mode action handles 3D availability checks internally
         # Enable 3D-specific controls only when in 3D mode
         am.get_action("view_3d_viewpoint").set_enabled(is_3d_view_active)
@@ -1280,15 +1278,7 @@ class MainWindow(Adw.ApplicationWindow):
         default_max_speed = machine_max_speed * 0.5
 
         # 1. Create the step with default parameters
-        step = create_material_test_step(
-            test_type="Cut",
-            speed_range=(default_min_speed, default_max_speed),
-            power_range=(80.0, 100.0),
-            grid_dimensions=(5, 5),
-            shape_size=10.0,
-            spacing=2.0,
-            include_labels=True,
-        )
+        step = create_material_test_step()
 
         # 2. Create the MaterialTestLayer and add step
         layer = MaterialTestLayer(_("Material Test"))

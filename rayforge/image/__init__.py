@@ -12,7 +12,7 @@ from .dxf.importer import DxfImporter
 from .dxf.renderer import DXF_RENDERER
 from .jpg.importer import JpgImporter
 from .jpg.renderer import JPG_RENDERER
-from .material_test_renderer import MaterialTestRenderer
+from .material_test_grid_renderer import MaterialTestRenderer
 from .ops_renderer import OPS_RENDERER
 from .pdf.importer import PdfImporter
 from .pdf.renderer import PDF_RENDERER

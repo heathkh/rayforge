@@ -5,12 +5,12 @@ Provides UI for configuring material test array parameters.
 """
 
 from typing import Dict, Any, TYPE_CHECKING, Tuple
-from gi.repository import Gtk, Adw, GLib
+from gi.repository import Gtk, Adw, GLib  # noqa: F401
 from .base import StepComponentSettingsWidget
 from ....shared.util.adwfix import get_spinrow_float, get_spinrow_int
 from ....shared.util.glib import DebounceMixin
 from ....pipeline.producer import MaterialTestGridProducer
-from ....pipeline.producer.material_test import MaterialTestGridType
+from ....pipeline.producer.material_test_grid import MaterialTestGridType
 from ....undo import DictItemCommand
 
 if TYPE_CHECKING:
@@ -43,15 +43,14 @@ PRESETS = {
         "speed_range": (1000.0, 20000.0),
         "power_range": (30.0, 100.0),
     },
-    
-   
+
 }
 
 
 class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget):
-    """UI for configuring MaterialTestGridProducer parameters."""
+    """MaterialTestGridProducer UI."""  # noqa: E501
 
-    # Material test defines its own speed/power ranges, so hide general settings
+    # Material test defines its own speed/power ranges; hide general settings
     show_general_settings = False
 
     def __init__(

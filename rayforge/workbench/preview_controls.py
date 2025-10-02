@@ -1,6 +1,6 @@
 """Preview playback controls overlay."""
 
-from gi.repository import Gtk, GLib, Adw
+from gi.repository import Gtk, GLib
 
 
 class PreviewControls(Gtk.Box):
@@ -18,7 +18,7 @@ class PreviewControls(Gtk.Box):
         self.preview_overlay = preview_overlay
         self.playing = False
         self.playback_timeout_id = None
-        self.loop_enabled = False 
+        self.loop_enabled = False
         self.step_increment = 1.0  # How many steps to advance per frame
         self.target_duration_sec = target_duration_sec  # Target playback duration
 

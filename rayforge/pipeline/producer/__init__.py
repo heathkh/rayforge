@@ -4,7 +4,7 @@ from .base import OpsProducer, PipelineArtifact
 from .depth import DepthEngraver
 from .edge import EdgeTracer
 from .frame import FrameProducer
-from .material_test import MaterialTestGridProducer, MaterialTestGridType
+from .material_test_grid import MaterialTestGridProducer, MaterialTestGridType
 from .shrinkwrap import ShrinkWrapProducer
 from .outline import OutlineTracer
 from .rasterize import Rasterizer

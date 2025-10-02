@@ -63,7 +63,7 @@ class MaterialTestRenderer(Renderer):
         ctx.paint()
 
         # Calculate dimensions
-        cols, rows = params["grid_dimensions"]
+        cols, rows = int(params["grid_dimensions"][0]), int(params["grid_dimensions"][1])
         shape_size = params["shape_size"]
         spacing = params["spacing"]
 
@@ -73,14 +73,15 @@ class MaterialTestRenderer(Renderer):
         # Add margins for labels if enabled (labels extend into negative space)
         include_labels = params.get("include_labels", True)
         if include_labels:
-            label_margin_left = 15
-            label_margin_top = 15
+            # Scale margins with font size to accommodate larger labels
+            font_scale = 4.375 / 2.5  # 1.75x
+            label_margin = 15.0 * font_scale
             # Total content area includes negative label space
-            total_width = grid_width + label_margin_left
-            total_height = grid_height + label_margin_top
+            total_width = grid_width + label_margin
+            total_height = grid_height + label_margin
             # Grid starts at (0,0), but we need to account for negative label space
-            offset_x = label_margin_left
-            offset_y = label_margin_top
+            offset_x = label_margin
+            offset_y = label_margin
         else:
             total_width = grid_width
             total_height = grid_height
@@ -123,8 +124,7 @@ class MaterialTestRenderer(Renderer):
             return None
 
     def _draw_grid(self, ctx: cairo.Context, params: Dict[str, Any]):
-        """Draws the test grid cells with gradient shading."""
-        cols, rows = params["grid_dimensions"]
+        cols, rows = int(params["grid_dimensions"][0]), int(params["grid_dimensions"][1])
         shape_size = params["shape_size"]
         spacing = params["spacing"]
         speed_range = params["speed_range"]
@@ -134,13 +134,14 @@ class MaterialTestRenderer(Renderer):
         min_speed, max_speed = speed_range
         min_power, max_power = power_range
 
-        speed_step = (max_speed - min_speed) / (cols - 1) if cols > 1 else 0
-        power_step = (max_power - min_power) / (rows - 1) if rows > 1 else 0
+        # Rows vary speed (Y-axis), columns vary power (X-axis)
+        speed_step = (max_speed - min_speed) / (rows - 1) if rows > 1 else 0
+        power_step = (max_power - min_power) / (cols - 1) if cols > 1 else 0
 
         for r in range(rows):
             for c in range(cols):
-                current_speed = min_speed + c * speed_step
-                current_power = min_power + r * power_step
+                current_speed = min_speed + r * speed_step
+                current_power = min_power + c * power_step
 
                 x = c * (shape_size + spacing)
                 y = r * (shape_size + spacing)
@@ -190,7 +191,7 @@ class MaterialTestRenderer(Renderer):
 
     def _draw_labels(self, ctx: cairo.Context, params: Dict[str, Any]):
         """Draws axis labels and numeric annotations."""
-        cols, rows = params["grid_dimensions"]
+        cols, rows = int(params["grid_dimensions"][0]), int(params["grid_dimensions"][1])
         shape_size = params["shape_size"]
         spacing = params["spacing"]
         speed_range = params["speed_range"]
@@ -202,19 +203,25 @@ class MaterialTestRenderer(Renderer):
         speed_step = (max_speed - min_speed) / (cols - 1) if cols > 1 else 0
         power_step = (max_power - min_power) / (rows - 1) if rows > 1 else 0
 
-        font_size = 2.5
+        font_size = 4.375  # Match producer font size (75% larger than original 2.5)
         ctx.select_font_face(
             "Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL
         )
         ctx.set_font_size(font_size)
         ctx.set_source_rgb(0.2, 0.2, 0.2)
 
-        # Main axis labels
+        # Scale label spacing proportionally to font size increase (1.75x)
+        # Reduced base values to bring labels closer to grid
+        font_scale = font_size / 2.5
+        numeric_label_offset = 3.5 * font_scale  # Reduced from 5.0 to bring closer
+        axis_label_offset = 9.0 * font_scale     # Reduced from 12.0 to bring closer
+
+        # Main axis labels (swapped: X=power, Y=speed)
         ctx.save()
-        text = "speed (mm/min)"
+        text = "power (%)"
         extents = ctx.text_extents(text)
         x = (cols * (shape_size + spacing) - spacing) / 2 - extents.width / 2
-        y = -10
+        y = -(7.0 * font_scale)  # Reduced from 10.0 to bring closer
         ctx.move_to(x, y)
         # Counter-rotate text to compensate for Y-flip
         ctx.scale(1, -1)
@@ -222,9 +229,9 @@ class MaterialTestRenderer(Renderer):
         ctx.restore()
 
         ctx.save()
-        text = "power (%)"
+        text = "speed (mm/min)"
         extents = ctx.text_extents(text)
-        x = -12
+        x = -axis_label_offset
         y = (rows * (shape_size + spacing) - spacing) / 2 + extents.width / 2
         ctx.translate(x, y)
         ctx.rotate(-1.5708)  # -90 degrees in radians
@@ -234,25 +241,29 @@ class MaterialTestRenderer(Renderer):
         ctx.show_text(text)
         ctx.restore()
 
-        # Numeric labels
+        # Numeric labels (swapped: X=power rotated vertically, Y=speed)
         for c in range(cols):
-            current_speed = min_speed + c * speed_step
-            text = f"{int(current_speed)}"
+            current_power = min_power + c * power_step
+            text = f"{int(current_power)}"
             extents = ctx.text_extents(text)
-            x = c * (shape_size + spacing) + shape_size / 2 - extents.width / 2
-            y = -5
+            # Center label horizontally in column
+            x = c * (shape_size + spacing) + shape_size / 2
+            # Position above grid, accounting for rotated text
+            y = -numeric_label_offset - extents.width / 2
             ctx.save()
-            ctx.move_to(x, y)
+            ctx.translate(x, y)
+            ctx.rotate(-1.5708)  # -90 degrees in radians (vertical)
             # Counter-rotate text to compensate for Y-flip
             ctx.scale(1, -1)
+            ctx.move_to(0, 0)
             ctx.show_text(text)
             ctx.restore()
 
         for r in range(rows):
-            current_power = min_power + r * power_step
-            text = f"{int(current_power)}"
+            current_speed = min_speed + r * speed_step
+            text = f"{int(current_speed)}"
             extents = ctx.text_extents(text)
-            x = -5 - extents.width
+            x = -numeric_label_offset - extents.width
             y = r * (shape_size + spacing) + shape_size / 2
             ctx.save()
             ctx.move_to(x, y)
@@ -269,20 +280,20 @@ class MaterialTestRenderer(Renderer):
         if not params:
             return None
 
-        cols, rows = params["grid_dimensions"]
+        cols, rows = int(params["grid_dimensions"][0]), int(params["grid_dimensions"][1])
         shape_size = params["shape_size"]
         spacing = params["spacing"]
 
         grid_width = cols * (shape_size + spacing) - spacing
         grid_height = rows * (shape_size + spacing) - spacing
 
-        # Add margins for labels if enabled
+        # Add margins for labels if enabled (scaled with font size)
         include_labels = params.get("include_labels", True)
         if include_labels:
-            label_margin_left = 15
-            label_margin_top = 15
-            width = grid_width + label_margin_left
-            height = grid_height + label_margin_top
+            font_scale = 4.375 / 2.5  # 1.75x
+            label_margin = 15.0 * font_scale
+            width = grid_width + label_margin
+            height = grid_height + label_margin
         else:
             width = grid_width
             height = grid_height

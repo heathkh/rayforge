@@ -1,7 +1,6 @@
-from typing import Dict, Any, TYPE_CHECKING
+import gi; gi.require_version("Adw", "1")  # noqa: E702
 
-import gi
-gi.require_version("Adw", "1")
+from typing import Dict, Any, TYPE_CHECKING
 from gi.repository import Adw
 
 if TYPE_CHECKING:
@@ -18,7 +17,8 @@ class StepComponentSettingsWidget(Adw.PreferencesGroup):
     signals to update the provided component model's dictionary representation.
     """
 
-    # Class property: override to False to hide general settings (power, speed, air assist)
+    # Class property: override to False to hide general settings
+    # (power, speed, air assist)
     show_general_settings = True
 
     def __init__(

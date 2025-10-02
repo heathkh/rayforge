@@ -17,7 +17,7 @@ from rayforge.core.ops import (
     LineToCommand,
 )
 from rayforge.pipeline.producer.base import OpsProducer, CoordinateSystem
-from rayforge.pipeline.producer.material_test import (
+from rayforge.pipeline.producer.material_test_grid import (
     MaterialTestGridProducer,
     MaterialTestGridType,
 )
@@ -251,11 +251,11 @@ def test_ops_contains_rectangles():
 def test_power_and_speed_ranges():
     """Test that generated power and speed values are within specified ranges."""
     min_speed, max_speed = 200.0, 800.0
-    min_power, max_power = 20.0, 80.0
+    min_power_percent, max_power_percent = 20.0, 80.0
 
     producer = MaterialTestGridProducer(
         speed_range=(min_speed, max_speed),
-        power_range=(min_power, max_power),
+        power_range=(min_power_percent, max_power_percent),
         grid_dimensions=(5, 5),
         include_labels=False,
     )
@@ -275,24 +275,59 @@ def test_power_and_speed_ranges():
         if isinstance(cmd, SetPowerCommand)
     ]
 
+    # Power values should be scaled to machine range (default max_power=1000)
+    min_power = (min_power_percent / 100.0) * 1000
+    max_power = (max_power_percent / 100.0) * 1000
+
     # All speeds should be within range
     assert all(min_speed <= s <= max_speed for s in speeds)
-    # All powers should be within range
-    assert all(min_power <= p <= max_power for p in powers)
+    # All powers should be within range (with small tolerance for floating point)
+    assert all(min_power - 0.1 <= p <= max_power + 0.1 for p in powers)
 
     # Should include both min and max values
     assert min_speed in speeds
     assert max_speed in speeds
-    assert min_power in powers
-    assert max_power in powers
+    assert any(abs(p - min_power) < 0.1 for p in powers)
+    assert any(abs(p - max_power) < 0.1 for p in powers)
 
 
 def test_single_column_grid():
-    """Test edge case: single column (only power varies)."""
+    """Test edge case: single column (only speed varies on Y-axis)."""
+    producer = MaterialTestGridProducer(
+        speed_range=(100.0, 500.0),
+        power_range=(50.0, 50.0),  # Same min and max
+        grid_dimensions=(1, 5),
+        include_labels=False,
+    )
+
+    artifact = producer.run(
+        laser=None, surface=None, pixels_per_mm=None, workpiece=None
+    )
+
+    speeds = [
+        cmd.speed
+        for cmd in artifact.ops.commands
+        if isinstance(cmd, SetCutSpeedCommand)
+    ]
+    powers = [
+        cmd.power
+        for cmd in artifact.ops.commands
+        if isinstance(cmd, SetPowerCommand)
+    ]
+
+    # Speeds should vary (across 5 rows)
+    assert len(set(speeds)) == 5
+    # All powers should be the same (scaled to machine range: 50% of 1000 = 500)
+    expected_power = (50.0 / 100.0) * 1000
+    assert all(abs(p - expected_power) < 0.1 for p in powers)
+
+
+def test_single_row_grid():
+    """Test edge case: single row (only power varies on X-axis)."""
     producer = MaterialTestGridProducer(
         speed_range=(100.0, 100.0),  # Same min and max
         power_range=(10.0, 50.0),
-        grid_dimensions=(1, 5),
+        grid_dimensions=(5, 1),
         include_labels=False,
     )
 
@@ -313,38 +348,8 @@ def test_single_column_grid():
 
     # All speeds should be the same
     assert all(s == 100.0 for s in speeds)
-    # Powers should vary
+    # Powers should vary (across 5 columns)
     assert len(set(powers)) == 5
-
-
-def test_single_row_grid():
-    """Test edge case: single row (only speed varies)."""
-    producer = MaterialTestGridProducer(
-        speed_range=(100.0, 500.0),
-        power_range=(50.0, 50.0),  # Same min and max
-        grid_dimensions=(5, 1),
-        include_labels=False,
-    )
-
-    artifact = producer.run(
-        laser=None, surface=None, pixels_per_mm=None, workpiece=None
-    )
-
-    speeds = [
-        cmd.speed
-        for cmd in artifact.ops.commands
-        if isinstance(cmd, SetCutSpeedCommand)
-    ]
-    powers = [
-        cmd.power
-        for cmd in artifact.ops.commands
-        if isinstance(cmd, SetPowerCommand)
-    ]
-
-    # Speeds should vary
-    assert len(set(speeds)) == 5
-    # All powers should be the same
-    assert all(p == 50.0 for p in powers)
 
 
 def test_workpiece_uid_in_section_commands(mock_workpiece: WorkPiece):

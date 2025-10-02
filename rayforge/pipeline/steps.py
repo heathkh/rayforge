@@ -174,68 +174,24 @@ def create_frame_step(name: Optional[str] = None) -> Step:
     return step
 
 
-def create_material_test_step(
-    test_type: str = "Engrave",
-    speed_range: Tuple[float, float] = (100.0, 500.0),
-    power_range: Tuple[float, float] = (10.0, 100.0),
-    grid_dimensions: Tuple[int, int] = (5, 5),
-    shape_size: float = 10.0,
-    spacing: float = 2.0,
-    include_labels: bool = True,
-    name: Optional[str] = None,
-) -> Step:
-    """
-    Factory to create a Material Test step.
-
-    Args:
-        test_type: "Cut" or "Engrave"
-        speed_range: (min_speed, max_speed) in mm/min
-        power_range: (min_power, max_power) in percentage
-        grid_dimensions: (columns, rows) for the test grid
-        shape_size: Size of each test square in mm
-        spacing: Gap between squares in mm
-        include_labels: Whether to add axis labels
-        name: Optional custom name for the step
-
-    Returns:
-        Configured Step object
-    """
-    assert config.config.machine, "Machine must be configured"
-
+def create_material_test_step(name: Optional[str] = None) -> Step:
+    """ Factory to create a Material Test step. """
+    assert config.config.machine
+    
     step = Step(
         typelabel=_("Material Test Grid"),
-        name=name or _("Material Test"),
-    )
-
-    # Convert string to enum for the producer
-    test_type_enum = MaterialTestGridType(test_type)
-
-    step.opsproducer_dict = MaterialTestGridProducer(
-        test_type=test_type_enum,
-        speed_range=speed_range,
-        power_range=power_range,
-        grid_dimensions=grid_dimensions,
-        shape_size=shape_size,
-        spacing=spacing,
-        include_labels=include_labels,
-    ).to_dict()
-
+        name=name
+    )    
+    step.opsproducer_dict = MaterialTestGridProducer().to_dict()
     # Material test doesn't use image modifiers
     step.modifiers_dicts = []
-
     # No transformers - ops are already optimally ordered
     step.opstransformers_dicts = []
-
     # No post-step transformers - we don't want path optimization
     step.post_step_transformers_dicts = []
-
     step.laser_dict = config.config.machine.heads[0].to_dict()
     step.max_cut_speed = config.config.machine.max_cut_speed
     step.max_travel_speed = config.config.machine.max_travel_speed
-
-    # Note: Individual test cells override these with their own speeds/powers
-    step.power = int((power_range[0] + power_range[1]) / 2)
-    step.cut_speed = int((speed_range[0] + speed_range[1]) / 2)
 
     return step
 

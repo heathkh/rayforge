@@ -1,9 +1,10 @@
-"""Material Test Layer - A specialized layer for material testing workpieces."""
+"""
+Material Test Layer - A specialized layer for material testing workpieces.
+"""
 
 from __future__ import annotations
 import logging
 from typing import Optional, Dict, TYPE_CHECKING
-from .item import DocItem
 from .layer import Layer
 from .workpiece import WorkPiece
 
@@ -32,9 +33,10 @@ class MaterialTestLayer(Layer):
         super().__init__(name=name)
 
     def to_dict(self) -> Dict:
-        """Serializes the MaterialTestLayer and its children to a dictionary."""
+        """Serializes the MaterialTestLayer and its children."""
         base_dict = super().to_dict()
-        base_dict["type"] = "materialtestlayer"  # Discriminator for deserialization
+        # Discriminator for deserialization
+        base_dict["type"] = "materialtestlayer"
         return base_dict
 
     def add_child(self, child: T, index: Optional[int] = None) -> T:
@@ -43,7 +45,8 @@ class MaterialTestLayer(Layer):
         Allows Workflow to be added (needed during layer initialization).
 
         Args:
-            child: The child to add (must be a WorkPiece with material test source or Workflow)
+            child: The child to add (must be a WorkPiece with material test
+                   source or Workflow)
             index: Optional position to insert the child
 
         Returns:
@@ -64,12 +67,15 @@ class MaterialTestLayer(Layer):
                 "Only WorkPiece instances can be added to a MaterialTestLayer."
             )
 
-        # Check if it's a material test workpiece (only if source is already resolved)
-        # During initial creation, the source might not be resolved yet, so we allow it
+        # Check if it's a material test workpiece
+        # (only if source is already resolved)
+        # During initial creation, the source might not be resolved yet,
+        # so we allow it
         source = child.source
         if source and source.metadata.get("type") != "material_test":
             raise ValueError(
-                "Only material test workpieces can be added to a MaterialTestLayer."
+                "Only material test workpieces can be added to a "
+                "MaterialTestLayer."
             )
 
         return super().add_child(child, index)

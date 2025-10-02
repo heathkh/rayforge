@@ -230,9 +230,11 @@ class LayerView(Gtk.Box):
             # Get workpiece count string
             count = len(self.layer.all_workpieces)
             if count == 1:
-                subtitle_text = _("Material Test - {count} grid").format(count=count)
+                subtitle_text = _("Material Test - {count} grid").format(
+                    count=count)
             else:
-                subtitle_text = _("Material Test - {count} grids").format(count=count)
+                subtitle_text = _("Material Test - {count} grids").format(
+                    count=count)
 
             self.subtitle_label.set_text(subtitle_text)
             self.subtitle_label.set_tooltip_text(subtitle_text)
