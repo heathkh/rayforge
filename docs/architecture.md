@@ -1,15 +1,61 @@
-# Rayforge Core Concepts
+# Rayforge Architecture 
 
 This document provides an architectural overview of Rayforge's core data model and pipeline architecture, explaining how the major components relate to each other.
 
 ## Table of Contents
 
+- [Code Architecture](#code-architecture)
 - [Document Hierarchy](#document-hierarchy)
 - [The Pipeline Architecture](#the-pipeline-architecture)
 - [Object Relationships](#object-relationships)
 - [Key Design Patterns](#key-design-patterns)
 
 ---
+
+## Code Architecture
+
+Rayforge is a GTK4/Libadwaita-based desktop application for laser cutter control, built with a modular, pipeline-driven architecture:
+
+### Core Architecture Components
+
+- **`rayforge/core/`**: Document model and geometry handling
+  - `doc.py`: Main document structure with layers and operations
+  - `ops/`: Operation definitions (contour, raster, etc.)
+  - `geo/`: Geometric primitives and transformations
+  - `group.py`, `layer.py`: Document organization
+
+- **`rayforge/pipeline/`**: Processing pipeline architecture
+  - `producer/`: Converts input formats to geometry
+  - `transformer/`: Modifies geometry (offsets, transforms, etc.)
+  - `modifier/`: Advanced geometry modifications
+  - `encoder/`: Converts to output formats (G-code, etc.)
+
+- **`rayforge/machine/`**: Hardware interface layer
+  - `driver/`: Device communication protocols
+  - `transport/`: Low-level communication (serial, network, etc.)
+  - `models/`: Machine configuration and profiles
+
+- **`rayforge/doceditor/`**: Document editing interface
+  - `editor.py`: Main document editor controller
+  - `ui/`: Document-specific UI components
+
+- **`rayforge/workbench/`**: Canvas and visualization
+  - `surface.py`: 2D drawing surface
+  - `canvas3d/`: 3D G-code preview system
+  - `elements/`: Canvas drawable elements
+
+- **`rayforge/image/`**: File format importers
+  - Each subdirectory handles a specific format (svg, pdf, dxf, etc.)
+
+### Key Design Patterns
+
+1. **Pipeline Processing**: Jobs flow through producer → transformer → modifier → encoder stages
+2. **Driver Architecture**: Composable transport + encoder for different machines
+3. **Document Model**: Hierarchical structure with layers containing operations
+4. **Async Task Management**: Background processing via `rayforge.shared.tasker`
+5. **Configuration Management**: Centralized config in `rayforge.config`
+
+
 
 ## Document Hierarchy
 
