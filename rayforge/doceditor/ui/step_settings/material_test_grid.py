@@ -52,9 +52,6 @@ class MaterialTestGridSettingsWidget(
 ):
     """MaterialTestGridProducer UI."""
 
-    # Material test defines its own speed/power ranges; hide general settings
-    show_general_settings = False
-
     def __init__(
         self,
         target_dict: Dict[str, Any],
@@ -80,7 +77,7 @@ class MaterialTestGridSettingsWidget(
         self._build_power_range(producer)
         self._build_grid_dimensions(producer)
         self._build_shape_size(producer)
-        self._build_spacing(producer)        
+        self._build_spacing(producer)
 
     def _build_preset_selector(self):
         """Builds the preset dropdown."""

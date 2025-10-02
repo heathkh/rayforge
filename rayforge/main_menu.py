@@ -53,16 +53,10 @@ class MainMenu(Gio.Menu):
         visibility_group.append(_("Show Workpieces"), "win.show_workpieces")
         visibility_group.append(_("Show Tabs"), "win.show_tabs")
         visibility_group.append(
-            _(
-                "Show Camera Image"
-            ),
-            "win.toggle_camera_view",
+            _("Show Camera Image"), "win.toggle_camera_view",
         )
         visibility_group.append(
-            _(
-                "Show Travel Moves"
-            ),
-            "win.toggle_travel_view",
+            _("Show Travel Moves"), "win.toggle_travel_view",
         )
         view_menu.append_section(None, visibility_group)
 

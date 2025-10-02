@@ -18,9 +18,7 @@ class StepSettingsDialog(Adw.Window):
         self.doc = doc
         self.step = step
         self.history_manager: HistoryManager = doc.history_manager
-        self.set_title(
-            _("{name} Settings").format(name=step.name)
-        )
+        self.set_title(_("{name} Settings").format(name=step.name))
 
         # Used to delay updates from continuous-change widgets like sliders
         # to avoid excessive updates.
@@ -89,156 +87,151 @@ class StepSettingsDialog(Adw.Window):
                     )
                     page.add(widget)
 
-        # 2. General Settings (check if producer widget wants them shown)
-        show_general = True
-        if producer_dict:
-            producer_name = producer_dict.get("type")
-            if producer_name:
-                WidgetClass = WIDGET_REGISTRY.get(producer_name)
-                if WidgetClass and hasattr(
-                    WidgetClass, 'show_general_settings'
-                ):
-                    show_general = WidgetClass.show_general_settings
+        general_group = Adw.PreferencesGroup(title=_("General Settings"))
+        page.add(general_group)
 
-        if show_general:
-            general_group = Adw.PreferencesGroup(title=_("General Settings"))
-            page.add(general_group)
-
-            # Laser Head Selector
-            if config.machine and config.machine.heads:
-                laser_names = [head.name for head in config.machine.heads]
-                string_list = Gtk.StringList.new(laser_names)
-                laser_row = Adw.ComboRow(
-                    title=_("Laser Head"), model=string_list
-                )
-
-                # Set initial selection
-                initial_index = 0
-                if step.selected_laser_uid:
-                    try:
-                        initial_index = next(
-                            i
-                            for i, head in enumerate(config.machine.heads)
-                            if head.uid == step.selected_laser_uid
-                        )
-                    except StopIteration:
-                        pass  # Fallback to index 0
-                laser_row.set_selected(initial_index)
-
-                laser_row.connect("notify::selected", self.on_laser_selected)
-                general_group.add(laser_row)
-
-            # Power Slider
-            power_row = Adw.ActionRow(title=_("Power (%)"))
-            power_adjustment = Gtk.Adjustment(
-                upper=100, step_increment=1, page_increment=10
+        # Laser Head Selector
+        if config.machine and config.machine.heads:
+            laser_names = [head.name for head in config.machine.heads]
+            string_list = Gtk.StringList.new(laser_names)
+            laser_row = Adw.ComboRow(
+                title=_("Laser Head"), model=string_list
             )
-            power_scale = Gtk.Scale(
-                orientation=Gtk.Orientation.HORIZONTAL,
-                adjustment=power_adjustment,
-                digits=0,
-                draw_value=True,
-            )
-            max_power = 1000  # Default fallback
-            if config.machine:
+
+            # Set initial selection
+            initial_index = 0
+            if step.selected_laser_uid:
                 try:
-                    selected_laser = step.get_selected_laser(config.machine)
-                    max_power = selected_laser.max_power
-                except (ValueError, IndexError):
-                    # Handles case where machine has no heads
-                    pass
-            power_percent = (
-                (step.power / max_power * 100) if max_power > 0 else 0
-            )
-            power_adjustment.set_value(power_percent)
-            power_scale.set_size_request(300, -1)
-            power_scale.connect(
-                "value-changed",
-                lambda scale: self._debounce(self.on_power_changed, scale),
-            )
-            power_row.add_suffix(power_scale)
-            general_group.add(power_row)
+                    initial_index = next(
+                        i
+                        for i, head in enumerate(config.machine.heads)
+                        if head.uid == step.selected_laser_uid
+                    )
+                except StopIteration:
+                    pass  # Fallback to index 0
+            laser_row.set_selected(initial_index)
 
-            # Add a spin row for cut speed
-            cut_speed_adjustment = Gtk.Adjustment(
-                lower=0,
-                upper=max_cut_speed,
-                step_increment=10,
-                page_increment=100,
-            )
-            cut_speed_row = Adw.SpinRow(
-                title=_("Cut Speed"),
-                subtitle=_(
-                    "Max: {max_speed}"
-                ),
-                adjustment=cut_speed_adjustment,
-            )
-            self.cut_speed_helper = UnitSpinRowHelper(
-                spin_row=cut_speed_row,
-                quantity="speed",
-                max_value_in_base=max_cut_speed,
-            )
-            self.cut_speed_helper.set_value_in_base_units(step.cut_speed)
-            self.cut_speed_helper.changed.connect(self.on_cut_speed_changed)
-            general_group.add(cut_speed_row)
+            laser_row.connect("notify::selected", self.on_laser_selected)
+            general_group.add(laser_row)
 
-            # Add a spin row for travel speed
-            travel_speed_adjustment = Gtk.Adjustment(
-                lower=0,
-                upper=max_travel_speed,
-                step_increment=10,
-                page_increment=100,
-            )
-            travel_speed_row = Adw.SpinRow(
-                title=_("Travel Speed"),
-                subtitle=_(
-                    "Max: {max_speed}"
-                ),
-                adjustment=travel_speed_adjustment,
-            )
-            self.travel_speed_helper = UnitSpinRowHelper(
-                spin_row=travel_speed_row,
-                quantity="speed",
-                max_value_in_base=max_travel_speed,
-            )
-            self.travel_speed_helper.set_value_in_base_units(step.travel_speed)
-            self.travel_speed_helper.changed.connect(
-                self.on_travel_speed_changed
-            )
-            general_group.add(travel_speed_row)
+        # Power Slider
+        power_row = Adw.ActionRow(title=_("Power (%)"))
+        power_adjustment = Gtk.Adjustment(
+            upper=100, step_increment=1, page_increment=10
+        )
+        power_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            adjustment=power_adjustment,
+            digits=0,
+            draw_value=True,
+        )
+        max_power = 1000  # Default fallback
+        if config.machine:
+            try:
+                selected_laser = step.get_selected_laser(config.machine)
+                max_power = selected_laser.max_power
+            except (ValueError, IndexError):
+                # Handles case where machine has no heads
+                pass
+        power_percent = (
+            (step.power / max_power * 100) if max_power > 0 else 0
+        )
+        power_adjustment.set_value(power_percent)
+        power_scale.set_size_request(300, -1)
+        power_scale.connect(
+            "value-changed",
+            lambda scale: self._debounce(self.on_power_changed, scale),
+        )
+        power_row.add_suffix(power_scale)
+        general_group.add(power_row)
+        # Set power row visibility based on producer capability
+        power_row.set_visible(producer.supports_power if producer else False)
 
-            # Add a switch for air assist
-            air_assist_row = Adw.SwitchRow()
-            air_assist_row.set_title(_("Air Assist"))
-            air_assist_row.set_active(step.air_assist)
-            air_assist_row.connect(
-                "notify::active", self.on_air_assist_changed
-            )
-            general_group.add(air_assist_row)
+        # Add a spin row for cut speed
+        cut_speed_adjustment = Gtk.Adjustment(
+            lower=0,
+            upper=max_cut_speed,
+            step_increment=10,
+            page_increment=100,
+        )
+        cut_speed_row = Adw.SpinRow(
+            title=_("Cut Speed"),
+            subtitle=_(
+                "Max: {max_speed}"
+            ),
+            adjustment=cut_speed_adjustment,
+        )
+        self.cut_speed_helper = UnitSpinRowHelper(
+            spin_row=cut_speed_row,
+            quantity="speed",
+            max_value_in_base=max_cut_speed,
+        )
+        self.cut_speed_helper.set_value_in_base_units(step.cut_speed)
+        self.cut_speed_helper.changed.connect(self.on_cut_speed_changed)
+        general_group.add(cut_speed_row)
 
-            # Kerf Setting (conditionally visible)
-            kerf_adj = Gtk.Adjustment(
-                lower=0.0,
-                upper=2.0,
-                step_increment=0.01,
-                page_increment=0.1,
-            )
-            self.kerf_row = Adw.SpinRow(
-                title=_("Beam Width (Kerf)"),
-                subtitle=_("Effective laser cut width in machine units"),
-                adjustment=kerf_adj,
-                digits=3,
-            )
-            kerf_adj.set_value(self.step.kerf_mm)
-            self.kerf_row.connect(
-                "changed", lambda r: self._debounce(self._on_kerf_changed, r)
-            )
-            general_group.add(self.kerf_row)
+        # Set cut speed row visibility based on producer capability
+        cut_speed_row.set_visible(
+            producer.supports_cut_speed if producer else False
+        )
 
-            # Set kerf row visibility based on producer capability
-            self.kerf_row.set_visible(
-                producer.supports_kerf if producer else False
-            )
+        # Add a spin row for travel speed
+        travel_speed_adjustment = Gtk.Adjustment(
+            lower=0,
+            upper=max_travel_speed,
+            step_increment=10,
+            page_increment=100,
+        )
+        travel_speed_row = Adw.SpinRow(
+            title=_("Travel Speed"),
+            subtitle=_(
+                "Max: {max_speed}"
+            ),
+            adjustment=travel_speed_adjustment,
+        )
+        self.travel_speed_helper = UnitSpinRowHelper(
+            spin_row=travel_speed_row,
+            quantity="speed",
+            max_value_in_base=max_travel_speed,
+        )
+        self.travel_speed_helper.set_value_in_base_units(step.travel_speed)
+        self.travel_speed_helper.changed.connect(
+            self.on_travel_speed_changed
+        )
+        general_group.add(travel_speed_row)
+
+        # Add a switch for air assist
+        air_assist_row = Adw.SwitchRow()
+        air_assist_row.set_title(_("Air Assist"))
+        air_assist_row.set_active(step.air_assist)
+        air_assist_row.connect(
+            "notify::active", self.on_air_assist_changed
+        )
+        general_group.add(air_assist_row)
+
+        # Kerf Setting (conditionally visible)
+        kerf_adj = Gtk.Adjustment(
+            lower=0.0,
+            upper=2.0,
+            step_increment=0.01,
+            page_increment=0.1,
+        )
+        self.kerf_row = Adw.SpinRow(
+            title=_("Beam Width (Kerf)"),
+            subtitle=_("Effective laser cut width in machine units"),
+            adjustment=kerf_adj,
+            digits=3,
+        )
+        kerf_adj.set_value(self.step.kerf_mm)
+        self.kerf_row.connect(
+            "changed", lambda r: self._debounce(self._on_kerf_changed, r)
+        )
+        general_group.add(self.kerf_row)
+
+        # Set kerf row visibility based on producer capability
+        self.kerf_row.set_visible(
+            producer.supports_kerf if producer else False
+        )
 
         # 3. Path Post-Processing Transformers
         if self.step.opstransformers_dicts:

@@ -92,7 +92,7 @@ class MainToolbar(Gtk.Box):
         self.append(self.show_travel_button)
 
         # Add a button to open the 3D preview window.
-        # Note: View modes are now controlled via menu and F9/F10/F11 hotkeys
+        # Note: View modes are now controlled via menu and F5/F6/F7 hotkeys
         view_3d_button = Gtk.Button(child=get_icon("3d-symbolic"))
         view_3d_button.set_action_name("win.view_mode")
         view_3d_button.set_action_target_value(GLib.Variant.new_string("3d"))
@@ -102,7 +102,7 @@ class MainToolbar(Gtk.Box):
                 _("3D view disabled (missing dependencies like PyOpenGL)")
             )
         else:
-            view_3d_button.set_tooltip_text(_("Show 3D Preview (F10)"))
+            view_3d_button.set_tooltip_text(_("Show 3D Preview"))
         self.append(view_3d_button)
 
         # Add a button to toggle tab visibility.

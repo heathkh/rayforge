@@ -83,6 +83,16 @@ class MaterialTestGridProducer(OpsProducer):
         self.spacing = spacing
         self.include_labels = include_labels
 
+    @property
+    def supports_power(self) -> bool:
+        """The grid generator does not support a fixed power setting."""
+        return False
+
+    @property
+    def supports_cut_speed(self) -> bool:
+        """The grid generator does not support a fixed speed setting."""
+        return False
+
     def run(
         self,
         laser,

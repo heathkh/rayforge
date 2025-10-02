@@ -230,3 +230,5 @@ class DocEditor:
     def _on_processing_state_changed(self, sender, is_processing: bool):
         """Proxies the signal from the OpsGenerator."""
         self.processing_state_changed.send(self, is_processing=is_processing)
+        if not is_processing:
+            self.document_settled.send(self)
