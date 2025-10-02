@@ -525,3 +525,17 @@ class MaterialTestGridProducer(OpsProducer):
                 "include_labels": self.include_labels,
             },
         }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "MaterialTestGridProducer":
+        """Deserializes a MaterialTestGridProducer from a dictionary."""
+        params = data.get("params", {})
+        return cls(
+            test_type=MaterialTestGridType(params.get("test_type", MaterialTestGridType.CUT.value)),
+            speed_range=tuple(params.get("speed_range", (100.0, 500.0))),
+            power_range=tuple(params.get("power_range", (10.0, 100.0))),
+            grid_dimensions=tuple(params.get("grid_dimensions", (5, 5))),
+            shape_size=params.get("shape_size", 10.0),
+            spacing=params.get("spacing", 2.0),
+            include_labels=params.get("include_labels", True),
+        )

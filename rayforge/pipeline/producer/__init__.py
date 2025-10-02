@@ -1,12 +1,11 @@
 # flake8: noqa:F401
 import inspect
-from .base import OpsProducer, PipelineArtifact
+from .base import OpsProducer, PipelineArtifact, CutSide
 from .depth import DepthEngraver
 from .edge import EdgeTracer
 from .frame import FrameProducer
 from .material_test_grid import MaterialTestGridProducer, MaterialTestGridType
 from .shrinkwrap import ShrinkWrapProducer
-from .outline import OutlineTracer
 from .rasterize import Rasterizer
 
 producer_by_name = dict(
@@ -21,7 +20,6 @@ producer_by_name = dict(
 
 __all__ = [
     "OpsProducer",
-    "OutlineTracer",
     "DepthEngraver",
     "EdgeTracer",
     "FrameProducer",

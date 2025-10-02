@@ -19,6 +19,7 @@ from rayforge.core.ops.commands import (
     LayerEndCommand,
     WorkpieceStartCommand,
     WorkpieceEndCommand,
+    SetLaserCommand,
 )
 
 
@@ -105,6 +106,17 @@ def test_disable_air_assist_command():
     assert cmd.is_state_command()
     data = cmd.to_dict()
     assert data["type"] == "DisableAirAssistCommand"
+
+
+def test_set_laser_command():
+    cmd = SetLaserCommand(laser_uid="laser-123")
+    state = State(active_laser_uid=None)
+    cmd.apply_to_state(state)
+    assert state.active_laser_uid == "laser-123"
+    assert cmd.is_state_command()
+    data = cmd.to_dict()
+    assert data["type"] == "SetLaserCommand"
+    assert data["laser_uid"] == "laser-123"
 
 
 # --- Marker Command Tests ---
@@ -255,23 +267,39 @@ def test_scan_line_power_command_linearize():
     )
     linearized = cmd.linearize(start_point)
 
-    # Expect 5 commands: Set(100), Line(1,0), Set(200), Line(2,0), Line(3,0)
-    assert len(linearized) == 5
-    # First power set
+    # Power changes from 100 to 200 after the first pixel.
+    # The next two pixels are 200, so they are one segment.
+    # Expected: Set(100), LineTo(pixel 0 end), Set(200), LineTo(final end)
+    assert len(linearized) == 4
+
+    # Segment 1 (power 100)
     assert isinstance(linearized[0], SetPowerCommand)
     assert linearized[0].power == 100
-    # First line segment
     assert isinstance(linearized[1], LineToCommand)
     assert linearized[1].end == pytest.approx((1.0, 0.0, 5.0))
-    # Second power set
+
+    # Segment 2 (power 200)
     assert isinstance(linearized[2], SetPowerCommand)
     assert linearized[2].power == 200
-    # Second line segment
+    # This line covers the last two pixels and goes to the final end point
     assert isinstance(linearized[3], LineToCommand)
-    assert linearized[3].end == pytest.approx((2.0, 0.0, 5.0))
-    # Third line segment (power is unchanged)
-    assert isinstance(linearized[4], LineToCommand)
-    assert linearized[4].end == pytest.approx((3.0, 0.0, 5.0))
+    assert linearized[3].end == pytest.approx((3.0, 0.0, 5.0))
+
+
+def test_scan_line_power_command_linearize_constant_power():
+    """Tests linearizing a scanline with constant power."""
+    start_point = (0, 10, 0)
+    cmd = ScanLinePowerCommand(
+        end=(5, 10, 0), power_values=bytearray([150, 150, 150, 150, 150])
+    )
+    linearized = cmd.linearize(start_point)
+
+    # Should be one SetPower and one LineTo the final destination
+    assert len(linearized) == 2
+    assert isinstance(linearized[0], SetPowerCommand)
+    assert linearized[0].power == 150
+    assert isinstance(linearized[1], LineToCommand)
+    assert linearized[1].end == (5, 10, 0)
 
 
 def test_scan_line_power_command_linearize_empty():
@@ -404,3 +432,25 @@ def test_scan_line_power_command_split_by_power_fully_on():
     assert move_cmd.end == pytest.approx((10.0, 10.0, 0.0))
     assert scan_cmd.end == pytest.approx((20.0, 10.0, 0.0))
     assert scan_cmd.power_values == powers
+
+
+def test_scan_line_power_command_split_by_power_fully_off():
+    """Tests splitting a scanline that is entirely below the threshold."""
+    start_point = (10, 10, 0)
+    end_point = (20, 10, 0)
+    powers = bytearray([10, 20, 30])
+    cmd = ScanLinePowerCommand(end=end_point, power_values=powers)
+
+    result = cmd.split_by_power(start_point, min_power=50)
+    assert result == []
+
+
+def test_scan_line_power_command_split_by_power_empty():
+    """Tests splitting a scanline with no power data."""
+    start_point = (10, 10, 0)
+    end_point = (20, 10, 0)
+    powers = bytearray([])
+    cmd = ScanLinePowerCommand(end=end_point, power_values=powers)
+
+    result = cmd.split_by_power(start_point, min_power=50)
+    assert result == []

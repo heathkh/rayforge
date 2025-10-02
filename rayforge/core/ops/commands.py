@@ -14,6 +14,7 @@ class State:
     air_assist: bool = False
     cut_speed: Optional[int] = None
     travel_speed: Optional[int] = None
+    active_laser_uid: Optional[str] = None
 
     def allow_rapid_change(self, target_state: State) -> bool:
         """
@@ -155,7 +156,12 @@ class ArcToCommand(MovingCommand):
     ) -> List[Command]:
         """Approximates the arc with a series of LineToCommands."""
         segments = geo_linearize.linearize_arc(self, start_point)
-        return [LineToCommand(end) for start, end in segments]
+        new_cmds = []
+        for _, end in segments:
+            line_cmd = LineToCommand(end)
+            line_cmd.state = self.state
+            new_cmds.append(line_cmd)
+        return new_cmds
 
     def reverse_geometry(
         self,
@@ -245,6 +251,23 @@ class DisableAirAssistCommand(Command):
 
     def apply_to_state(self, state: "State") -> None:
         state.air_assist = False
+
+
+class SetLaserCommand(Command):
+    def __init__(self, laser_uid: str) -> None:
+        super().__init__()
+        self.laser_uid = laser_uid
+
+    def is_state_command(self) -> bool:
+        return True
+
+    def apply_to_state(self, state: "State") -> None:
+        state.active_laser_uid = self.laser_uid
+
+    def to_dict(self) -> Dict[str, Any]:
+        d = super().to_dict()
+        d["laser_uid"] = self.laser_uid
+        return d
 
 
 @dataclass(frozen=True, repr=False)
@@ -378,9 +401,8 @@ class ScanLinePowerCommand(MovingCommand):
         self, start_point: Tuple[float, float, float]
     ) -> List[Command]:
         """
-        Deconstructs the scan line into a sequence of SetPower and LineTo
-        commands. The `start_point` parameter from the interface is now
-        required.
+        Deconstructs the scan line into an efficient sequence of SetPower and
+        LineTo commands by grouping consecutive pixels of the same power.
         """
         commands: List[Command] = []
         num_steps = len(self.power_values)
@@ -391,18 +413,27 @@ class ScanLinePowerCommand(MovingCommand):
         p_end_vec = np.array(self.end)
         line_vec = p_end_vec - p_start_vec
 
-        last_power = -1  # Sentinel value
+        # Start the first segment
+        segment_start_power = self.power_values[0]
+        commands.append(SetPowerCommand(int(segment_start_power)))
 
-        for i in range(num_steps):
-            t = (i + 1) / num_steps
-            current_point = p_start_vec + t * line_vec
+        for i in range(1, num_steps):
             current_power = self.power_values[i]
+            if current_power != segment_start_power:
+                # Power has changed. The previous segment ended at pixel i-1.
+                # The geometric end point corresponds to t = i / num_steps.
+                t_end = i / float(num_steps)
+                segment_end_point = p_start_vec + t_end * line_vec
+                commands.append(LineToCommand(tuple(segment_end_point)))
 
-            if current_power != last_power:
-                commands.append(SetPowerCommand(current_power))
-                last_power = current_power
+                # Start the new segment
+                segment_start_power = current_power
+                commands.append(SetPowerCommand(int(segment_start_power)))
 
-            commands.append(LineToCommand(tuple(current_point)))
+        # Add the final LineTo command for the last segment, which always
+        # goes to the very end of the scan line.
+        commands.append(LineToCommand(self.end))
+
         return commands
 
     def split_by_power(

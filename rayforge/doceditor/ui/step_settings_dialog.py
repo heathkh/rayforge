@@ -6,6 +6,8 @@ from ...undo import HistoryManager, ChangePropertyCommand
 from ...core.doc import Doc
 from ...core.step import Step
 from ...shared.ui.unit_spin_row import UnitSpinRowHelper
+from ...shared.util.adwfix import get_spinrow_float
+from ...pipeline.producer import OpsProducer
 from ...pipeline.transformer import OpsTransformer
 from .step_settings import WIDGET_REGISTRY
 
@@ -68,9 +70,12 @@ class StepSettingsDialog(Adw.Window):
 
         # 1. Producer Settings
         producer_dict = self.step.opsproducer_dict
+        producer = None
         if producer_dict:
             producer_name = producer_dict.get("type")
             if producer_name:
+                # Instantiate producer to check its properties later
+                producer = OpsProducer.from_dict(producer_dict)
                 WidgetClass = WIDGET_REGISTRY.get(producer_name)
                 if WidgetClass:
                     widget = WidgetClass(
@@ -91,9 +96,32 @@ class StepSettingsDialog(Adw.Window):
                 if WidgetClass and hasattr(WidgetClass, 'show_general_settings'):
                     show_general = WidgetClass.show_general_settings
 
+<<<<<<< HEAD
         if show_general:
             general_group = Adw.PreferencesGroup(title=_("General Settings"))
             page.add(general_group)
+
+            # Laser Head Selector
+            if config.machine and config.machine.heads:
+                laser_names = [head.name for head in config.machine.heads]
+                string_list = Gtk.StringList.new(laser_names)
+                laser_row = Adw.ComboRow(title=_("Laser Head"), model=string_list)
+
+                # Set initial selection
+                initial_index = 0
+                if step.selected_laser_uid:
+                    try:
+                        initial_index = next(
+                            i
+                            for i, head in enumerate(config.machine.heads)
+                            if head.uid == step.selected_laser_uid
+                        )
+                    except StopIteration:
+                        pass  # Fallback to index 0
+                laser_row.set_selected(initial_index)
+
+                laser_row.connect("notify::selected", self.on_laser_selected)
+                general_group.add(laser_row)
 
             # Power Slider
             power_row = Adw.ActionRow(title=_("Power (%)"))
@@ -106,9 +134,14 @@ class StepSettingsDialog(Adw.Window):
                 digits=0,
                 draw_value=True,
             )
-            max_power = (
-                step.laser_dict.get("max_power", 1000) if step.laser_dict else 1000
-            )
+            max_power = 1000  # Default fallback
+            if config.machine:
+                try:
+                    selected_laser = step.get_selected_laser(config.machine)
+                    max_power = selected_laser.max_power
+                except (ValueError, IndexError):
+                    # Handles case where machine has no heads
+                    pass
             power_percent = (step.power / max_power * 100) if max_power > 0 else 0
             power_adjustment.set_value(power_percent)
             power_scale.set_size_request(300, -1)
@@ -168,6 +201,96 @@ class StepSettingsDialog(Adw.Window):
             air_assist_row.connect("notify::active", self.on_air_assist_changed)
             general_group.add(air_assist_row)
 
+        # Kerf Setting (conditionally visible)
+        kerf_adj = Gtk.Adjustment(
+            lower=0.0, upper=2.0, step_increment=0.01, page_increment=0.1
+        )
+        self.kerf_row = Adw.SpinRow(
+            title=_("Beam Width (Kerf)"),
+            subtitle=_(
+                "The effective width of the laser cut in machine units"
+            ),
+            adjustment=kerf_adj,
+            digits=3,
+        )
+        kerf_adj.set_value(self.step.kerf_mm)
+        self.kerf_row.connect(
+            "changed", lambda r: self._debounce(self._on_kerf_changed, r)
+        )
+        general_group.add(self.kerf_row)
+
+            # Add a spin row for cut speed
+            cut_speed_adjustment = Gtk.Adjustment(
+                lower=0,
+                upper=max_cut_speed,
+                step_increment=10,
+                page_increment=100,
+            )
+            cut_speed_row = Adw.SpinRow(
+                title=_("Cut Speed"),
+                subtitle=_("Max: {max_speed}"),
+                adjustment=cut_speed_adjustment,
+            )
+            self.cut_speed_helper = UnitSpinRowHelper(
+                spin_row=cut_speed_row,
+                quantity="speed",
+                max_value_in_base=max_cut_speed,
+            )
+            self.cut_speed_helper.set_value_in_base_units(step.cut_speed)
+            self.cut_speed_helper.changed.connect(self.on_cut_speed_changed)
+            general_group.add(cut_speed_row)
+
+            # Add a spin row for travel speed
+            travel_speed_adjustment = Gtk.Adjustment(
+                lower=0,
+                upper=max_travel_speed,
+                step_increment=10,
+                page_increment=100,
+            )
+            travel_speed_row = Adw.SpinRow(
+                title=_("Travel Speed"),
+                subtitle=_("Max: {max_speed}"),
+                adjustment=travel_speed_adjustment,
+            )
+            self.travel_speed_helper = UnitSpinRowHelper(
+                spin_row=travel_speed_row,
+                quantity="speed",
+                max_value_in_base=max_travel_speed,
+            )
+            self.travel_speed_helper.set_value_in_base_units(step.travel_speed)
+            self.travel_speed_helper.changed.connect(self.on_travel_speed_changed)
+            general_group.add(travel_speed_row)
+
+            # Add a switch for air assist
+            air_assist_row = Adw.SwitchRow()
+            air_assist_row.set_title(_("Air Assist"))
+            air_assist_row.set_active(step.air_assist)
+            air_assist_row.connect("notify::active", self.on_air_assist_changed)
+            general_group.add(air_assist_row)
+
+        # Kerf Setting (conditionally visible)
+        kerf_adj = Gtk.Adjustment(
+            lower=0.0, upper=2.0, step_increment=0.01, page_increment=0.1
+        )
+        self.kerf_row = Adw.SpinRow(
+            title=_("Beam Width (Kerf)"),
+            subtitle=_(
+                "The effective width of the laser cut in machine units"
+            ),
+            adjustment=kerf_adj,
+            digits=3,
+        )
+        kerf_adj.set_value(self.step.kerf_mm)
+        self.kerf_row.connect(
+            "changed", lambda r: self._debounce(self._on_kerf_changed, r)
+        )
+        general_group.add(self.kerf_row)
+
+        # Set kerf row visibility based on producer capability
+        self.kerf_row.set_visible(
+            producer.supports_kerf if producer else False
+        )
+
         # 3. Path Post-Processing Transformers
         if self.step.opstransformers_dicts:
             for t_dict in self.step.opstransformers_dicts:
@@ -203,6 +326,46 @@ class StepSettingsDialog(Adw.Window):
                         page.add(widget)
 
         self.changed = Signal()
+
+    def on_laser_selected(self, combo_row, pspec):
+        """Handles changes in the laser head selection."""
+        if not config.machine or not config.machine.heads:
+            return
+
+        selected_index = combo_row.get_selected()
+        selected_laser = config.machine.heads[selected_index]
+        new_uid = selected_laser.uid
+
+        if self.step.selected_laser_uid == new_uid:
+            return
+
+        # Use a transaction to group laser and kerf changes into one
+        # undoable action.
+        with self.history_manager.transaction(_("Change Laser")) as t:
+            # Command for the laser UID
+            t.execute(
+                ChangePropertyCommand(
+                    target=self.step,
+                    property_name="selected_laser_uid",
+                    new_value=new_uid,
+                    setter_method_name="set_selected_laser_uid",
+                )
+            )
+
+            # Command for the kerf, using the new laser's spot size
+            new_kerf = selected_laser.spot_size_mm[0]
+            t.execute(
+                ChangePropertyCommand(
+                    target=self.step,
+                    property_name="kerf_mm",
+                    new_value=new_kerf,
+                    setter_method_name="set_kerf_mm",
+                )
+            )
+            # Update the UI to reflect the new model state
+            self.kerf_row.set_value(new_kerf)
+
+        self.changed.send(self)
 
     def _on_key_pressed(self, controller, keyval, keycode, state):
         """Handle key press events, closing the dialog on Escape or Ctrl+W."""
@@ -248,12 +411,28 @@ class StepSettingsDialog(Adw.Window):
         self._debounced_args = ()
         return GLib.SOURCE_REMOVE
 
+    def _on_kerf_changed(self, spin_row):
+        new_value = get_spinrow_float(spin_row)
+        if abs(new_value - self.step.kerf_mm) > 1e-6:
+            command = ChangePropertyCommand(
+                target=self.step,
+                property_name="kerf_mm",
+                new_value=new_value,
+                setter_method_name="set_kerf_mm",
+                name=_("Change Kerf"),
+            )
+            self.history_manager.execute(command)
+            self.changed.send(self)
+
     def on_power_changed(self, scale):
-        max_power = (
-            self.step.laser_dict.get("max_power", 1000)
-            if self.step.laser_dict
-            else 1000
-        )
+        max_power = 1000  # Default fallback
+        if config.machine:
+            try:
+                selected_laser = self.step.get_selected_laser(config.machine)
+                max_power = selected_laser.max_power
+            except (ValueError, IndexError):
+                # Handles case where machine has no heads
+                pass
         new_value = max_power / 100 * scale.get_value()
         command = ChangePropertyCommand(
             target=self.step,

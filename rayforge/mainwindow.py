@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import numpy as np
 from pathlib import Path
 from typing import List, Optional, cast
 from gi.repository import Gtk, Gio, GLib, Gdk, Adw
@@ -24,6 +25,7 @@ from .core.materialtestlayer import MaterialTestLayer
 from .core.import_source import ImportSource
 from .pipeline.steps import STEP_FACTORIES, create_contour_step, create_material_test_step
 from .pipeline.job import generate_job_ops
+from .pipeline.encoder.gcode import GcodeEncoder
 from .undo import HistoryManager, Command
 from .doceditor.editor import DocEditor
 from .doceditor.ui.workflow_view import WorkflowView
@@ -48,6 +50,7 @@ from .workbench.view_mode_cmd import ViewModeCmd
 from .workbench.canvas3d import Canvas3D, initialized as canvas3d_initialized
 from .image.material_test_grid_renderer import MaterialTestRenderer
 from .doceditor.ui import file_dialogs, import_handler
+from .shared.gcodeedit.previewer import GcodePreviewer
 
 
 logger = logging.getLogger(__name__)
@@ -132,6 +135,7 @@ class MainWindow(Adw.ApplicationWindow):
         super().__init__(**kwargs)
         self.set_title(_("Rayforge"))
         self._current_machine: Optional[Machine] = None  # For signal handling
+        self._last_gcode_previewer_width = 350
 
         # The ToastOverlay will wrap the main content box
         self.toast_overlay = Adw.ToastOverlay()
@@ -252,7 +256,35 @@ class MainWindow(Adw.ApplicationWindow):
         )
         self.view_stack.set_margin_start(12)
         self.view_stack.set_hexpand(True)
-        self.paned.set_start_child(self.view_stack)
+        self.view_stack.connect(
+            "notify::visible-child-name", self._on_view_stack_changed
+        )
+
+        # Create the G-code previewer
+        self.gcode_previewer = GcodePreviewer()
+        self.gcode_previewer.set_size_request(
+            self._last_gcode_previewer_width, -1
+        )
+
+        # Create a new paned for the left side of the window
+        self.left_content_pane = Gtk.Paned(
+            orientation=Gtk.Orientation.HORIZONTAL
+        )
+        # Put the previewer directly into the paned, NO REVEALER
+        self.left_content_pane.set_start_child(self.gcode_previewer)
+        self.left_content_pane.set_end_child(self.view_stack)
+        self.left_content_pane.set_resize_end_child(True)
+        self.left_content_pane.set_shrink_end_child(False)
+
+        # Connect to the position signal to remember the user's chosen width
+        self.left_content_pane.connect(
+            "notify::position", self._on_left_pane_position_changed
+        )
+        # Set the initial position to 0 to start "hidden"
+        self.left_content_pane.set_position(0)
+
+        # The new left-side paned is the start child of the main paned
+        self.paned.set_start_child(self.left_content_pane)
 
         # Wrap surface in an overlay to allow preview controls
         self.surface_overlay = Gtk.Overlay()
@@ -356,7 +388,53 @@ class MainWindow(Adw.ApplicationWindow):
         # Set initial state
         self.on_config_changed(None)
 
-    def on_view_mode_changed(
+    def _on_left_pane_position_changed(self, paned, param):
+        """
+        Stores the user-defined width of the G-code previewer pane so it can
+        be restored later.
+        """
+        position = paned.get_position()
+        # Only store the position if the pane is open. This prevents
+        # storing '0' when it gets hidden automatically.
+        if position > 1:
+            self._last_gcode_previewer_width = position
+
+    def _on_view_stack_changed(self, stack: Gtk.Stack, param):
+        """Shows/hides the G-code previewer by moving the paned separator."""
+        is_3d_active = stack.get_visible_child_name() == "3d"
+
+        if is_3d_active:
+            # Animate the pane open to its last known width
+            self.left_content_pane.set_position(
+                self._last_gcode_previewer_width
+            )
+        else:
+            # Animate the pane closed
+            self.left_content_pane.set_position(0)
+            self.gcode_previewer.clear()
+
+    def _update_gcode_preview(self, ops: Optional[Ops]):
+        """Generates G-code from Ops and updates the preview panel."""
+        if ops is None or not config.machine:
+            self.gcode_previewer.clear()
+            return
+
+        machine = config.machine
+        doc = self.doc_editor.doc
+
+        try:
+            encoder = GcodeEncoder.for_machine(machine)
+            gcode_string = encoder.encode(ops, machine, doc)
+            self.gcode_previewer.set_gcode(gcode_string)
+        except Exception:
+            logger.error(
+                "Failed to generate G-code for preview", exc_info=True
+            )
+            toast = Adw.Toast.new(_("Failed to generate G-code preview."))
+            self.toast_overlay.add_toast(toast)
+            self.gcode_previewer.clear()
+
+    def on_show_3d_view(
         self, action: Gio.SimpleAction, value: Optional[GLib.Variant]
     ):
         """Handles view mode changes (2d, 3d, preview)."""
@@ -693,6 +771,20 @@ class MainWindow(Adw.ApplicationWindow):
         if doc.active_layer and doc.active_layer.workflow:
             self.workflowview.set_workflow(doc.active_layer.workflow)
 
+        # If the 3D view is active, any document change should trigger a
+        # re-aggregation of the toolpaths.
+        if (
+            canvas3d_initialized
+            and hasattr(self, "canvas3d")
+            and self.view_stack.get_visible_child_name() == "3d"
+        ):
+            task_key = "aggregate-3d-ops"
+            task_mgr.run_thread(
+                self._aggregate_ops_for_3d_view,
+                when_done=self._on_3d_ops_aggregated,
+                key=task_key,
+            )
+
         # Sync the selectability of stock items based on active layer
         self._sync_element_selectability()
 
@@ -743,7 +835,7 @@ class MainWindow(Adw.ApplicationWindow):
     def _aggregate_ops_for_3d_view(self) -> Ops:
         """
         Gathers all generated Ops from the document, transforms them into
-        world coordinates, and merges them into a single Ops object for 3D
+        machine coordinates, and merges them into a single Ops object for 3D
         rendering. This is a heavy function and should be run in a background
         thread.
         """
@@ -751,33 +843,57 @@ class MainWindow(Adw.ApplicationWindow):
         doc = self.doc_editor.doc
         generator = self.doc_editor.ops_generator
 
+        machine = config.machine
+        if not machine:
+            logger.warning(
+                "Cannot aggregate 3D ops without an active machine."
+            )
+            return full_ops
+
+        machine_width, machine_height = machine.dimensions
+        clip_rect = 0, 0, machine_width, machine_height
+
         for layer in doc.layers:
             if not layer.workflow:
                 continue
 
             # Process workpieces in the layer
             for workpiece in layer.all_workpieces:
-                # Get the final transform from workpiece-local to world space
+                # Get the final transform from workpiece-local to world
                 world_transform = workpiece.get_world_transform()
                 tx, ty, angle, sx, sy, skew = world_transform.decompose()
 
-                # Re-compose the matrix without the scale component, as the ops
-                # are already scaled to the workpiece's final size.
-                # Note: sy's sign is preserved to handle reflections correctly.
+                # Re-compose the matrix without the scale component, as the
+                # ops are already scaled to the workpiece's final size.
+                # Note: sy's sign is preserved to handle reflections.
                 transform_without_scale = Matrix.compose(
                     tx, ty, angle, 1.0, math.copysign(1.0, sy), skew
                 )
+                workpiece_transform = transform_without_scale.to_4x4_numpy()
+
+                # Combine workpiece world transform with machine coordinate
+                # transform.
+                final_transform = workpiece_transform
+                if machine.y_axis_down:
+                    y_down_mat = np.identity(4)
+                    y_down_mat[1, 1] = -1.0
+                    y_down_mat[1, 3] = machine_height
+                    # The machine coordinate transform is applied AFTER the
+                    # workpiece's world transform.
+                    final_transform = y_down_mat @ workpiece_transform
 
                 # Accumulate ops from all steps for this workpiece
                 for step in layer.workflow.steps:
+                    if not step.visible:
+                        continue
                     workpiece_ops = generator.get_ops(step, workpiece)
                     if workpiece_ops:
-                        # Transform from local to world coordinates
-                        workpiece_ops.transform(
-                            transform_without_scale.to_4x4_numpy()
-                        )
+                        # Transform from local to machine coordinates
+                        workpiece_ops.transform(final_transform)
                         full_ops.extend(workpiece_ops)
-        return full_ops
+
+        # Clip the final aggregated ops to the machine boundaries
+        return full_ops.clip(clip_rect)
 
     def _on_3d_ops_aggregated(self, task: Task):
         """
@@ -792,6 +908,7 @@ class MainWindow(Adw.ApplicationWindow):
         if canvas3d_initialized and hasattr(self, "canvas3d"):
             logger.debug("Background aggregation finished. Updating 3D view.")
             self.canvas3d.set_ops(aggregated_ops)
+            self._update_gcode_preview(aggregated_ops)
 
     def _on_document_settled(self, sender):
         """
