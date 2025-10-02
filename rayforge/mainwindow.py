@@ -23,7 +23,11 @@ from .core.stock import StockItem
 from .core.stocklayer import StockLayer
 from .core.materialtestlayer import MaterialTestLayer
 from .core.import_source import ImportSource
-from .pipeline.steps import STEP_FACTORIES, create_contour_step, create_material_test_step
+from .pipeline.steps import (
+    STEP_FACTORIES,
+    create_contour_step,
+    create_material_test_step,
+)
 from .pipeline.job import generate_job_ops
 from .pipeline.encoder.gcode import GcodeEncoder
 from .undo import HistoryManager, Command
@@ -56,7 +60,8 @@ from .shared.gcodeedit.previewer import GcodePreviewer
 logger = logging.getLogger(__name__)
 
 
-css = """
+css = (
+    """
 .mainpaned > separator {
     border: none;
     box-shadow: none;
@@ -91,6 +96,7 @@ css = """
     font-weight: bold;
 }
 """
+)
 
 
 def _get_monitor_geometry() -> Optional[Gdk.Rectangle]:
@@ -434,7 +440,7 @@ class MainWindow(Adw.ApplicationWindow):
             self.toast_overlay.add_toast(toast)
             self.gcode_previewer.clear()
 
-    def on_show_3d_view(
+    def on_view_mode_changed(
         self, action: Gio.SimpleAction, value: Optional[GLib.Variant]
     ):
         """Handles view mode changes (2d, 3d, preview)."""
@@ -493,7 +499,9 @@ class MainWindow(Adw.ApplicationWindow):
 
             try:
                 logger.debug("Creating 3D preview")
-                context.set_message("Generating path preview...")
+                context.set_message(
+                    "Generating path preview..."
+                )
                 ops = await generate_job_ops(
                     self.doc_editor.doc,
                     current_machine,
@@ -503,10 +511,14 @@ class MainWindow(Adw.ApplicationWindow):
                 if self.canvas3d:
                     self.canvas3d.set_ops(ops)
                 logger.debug("Preview ready")
-                context.set_message("Path preview loaded.")
+                context.set_message(
+                    "Path preview loaded."
+                )
                 context.set_progress(1.0)
             except Exception:
-                logger.error("Failed to generate ops for 3D view", exc_info=True)
+                logger.error(
+                    "Failed to generate ops for 3D view", exc_info=True
+                )
                 toast = Adw.Toast.new(_("Failed to generate path preview."))
                 self.toast_overlay.add_toast(toast)
                 self.view_stack.set_visible_child_name("2d")
@@ -516,7 +528,8 @@ class MainWindow(Adw.ApplicationWindow):
         task_mgr.add_coroutine(load_ops_coro, key="load-3d-preview")
 
     def _enter_preview_mode(self):
-        """Enters preview mode by creating overlay and enabling it on the canvas."""
+        """Enters preview mode by creating overlay and enabling it on the
+        canvas."""
         # Get work area size
         if config.machine:
             work_area_size = config.machine.dimensions
@@ -579,7 +592,10 @@ class MainWindow(Adw.ApplicationWindow):
                 speed_label = container.get_last_child()
                 if speed_label:
                     speed_label.set_markup(
-                        f"<small>Speed range: {speed_min:.0f} - {speed_max:.0f} mm/min</small>"
+                        (
+                            f"<small>Speed range: {speed_min:.0f} - "
+                            f"{speed_max:.0f} mm/min</small>"
+                        )
                     )
 
             # Restart playback if it was playing
@@ -643,7 +659,7 @@ class MainWindow(Adw.ApplicationWindow):
             self.canvas3d.set_show_travel_moves(is_visible)
         action.set_state(value)
 
-    def on_view_3d_viewpoint_changed(
+    def on_3d_viewpoint_changed(
         self, action: Gio.SimpleAction, value: Optional[GLib.Variant]
     ):
         """Handles 3D viewpoint changes (top/front/iso)."""
@@ -662,10 +678,12 @@ class MainWindow(Adw.ApplicationWindow):
         action.set_state(value)
 
     def on_view_toggle_perspective(self, action, param):
-        """Toggles between perspective and orthographic projection in 3D view."""
+        """Toggles between perspective and orthographic projection in 3D
+        view."""
         if self.canvas3d and self.canvas3d.camera:
             # Toggle the current state
-            self.canvas3d.camera.is_perspective = not self.canvas3d.camera.is_perspective
+            is_pers = self.canvas3d.camera.is_perspective
+            self.canvas3d.camera.is_perspective = not is_pers
             self.canvas3d.queue_render()
 
     def _initialize_document(self):
@@ -1384,15 +1402,9 @@ class MainWindow(Adw.ApplicationWindow):
 
     def on_show_material_test(self, action, param):
         """Creates a material test layer with default settings."""
-        # Get machine max speed for default values
-        machine_max_speed = 10000.0  # Default fallback
-        if config.machine:
-            machine_max_speed = config.machine.max_cut_speed
 
-        # Calculate sensible default speed range
-        # Default to 10% - 50% of max speed for initial testing
-        default_min_speed = machine_max_speed * 0.1
-        default_max_speed = machine_max_speed * 0.5
+    # Calculate sensible default speed range (10% - 50% of max speed)
+    # Values are used by the material test step factory implicitly.
 
         # 1. Create the step with default parameters
         step = create_material_test_step()

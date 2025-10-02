@@ -11,12 +11,20 @@ import cairo
 from gi.repository import Gtk, GLib
 from ..core.ops import Ops
 from ..core.ops.commands import (
-    Command, LineToCommand, MoveToCommand, State,
-    SetPowerCommand, SetCutSpeedCommand
+    Command,
+    LineToCommand,
+    MoveToCommand,
+    State,
+    SetPowerCommand,
+    SetCutSpeedCommand,
 )
 
 
-def speed_to_heatmap_color(speed: float, min_speed: float, max_speed: float) -> Tuple[float, float, float]:
+def speed_to_heatmap_color(
+    speed: float,
+    min_speed: float,
+    max_speed: float,
+) -> Tuple[float, float, float]:
     """
     Converts speed to RGB heatmap color.
 
@@ -140,7 +148,11 @@ class PreviewRenderer:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
-        self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+        self.surface = cairo.ImageSurface(
+            cairo.FORMAT_ARGB32,
+            width,
+            height,
+        )
         self.bounds = (0.0, 0.0, 100.0, 100.0)  # (min_x, min_y, max_x, max_y)
         self.speed_range = (0.0, 1000.0)  # Will be calculated from steps
         self.work_area = None  # (width, height) in mm, if set
@@ -227,7 +239,8 @@ class PreviewRenderer:
 
         ctx.set_line_width(0.1)  # Line width in mm
 
-        # Speed range is pre-calculated and passed in, not recalculated per frame
+        # Speed range is pre-calculated and passed in, not recalculated
+        # per frame
 
         # Draw each step
         for cmd, state, start_pos in steps:

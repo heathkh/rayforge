@@ -5,22 +5,29 @@ from gi.repository import Gtk, GLib
 
 class PreviewControls(Gtk.Box):
     """
-    Control panel for preview playback with play/pause, slider, and progress display.
-    Designed to overlay on top of the canvas.
+    Control panel for preview playback with play/pause, slider, and
+    progress display. Designed to overlay on top of the canvas.
     """
 
-    def __init__(self, preview_overlay, target_duration_sec=5.0, **kwargs):
+    def __init__(
+        self,
+        preview_overlay,
+        target_duration_sec: float = 5.0,
+        **kwargs,
+    ):
         super().__init__(
             orientation=Gtk.Orientation.VERTICAL,
             spacing=6,
-            **kwargs
+            **kwargs,
         )
         self.preview_overlay = preview_overlay
         self.playing = False
         self.playback_timeout_id = None
         self.loop_enabled = False
-        self.step_increment = 1.0  # How many steps to advance per frame
-        self.target_duration_sec = target_duration_sec  # Target playback duration
+        # How many steps to advance per frame
+        self.step_increment = 1.0
+        # Target playback duration
+        self.target_duration_sec = target_duration_sec
 
         # Add CSS class for styling
         self.add_css_class("preview-controls")
@@ -31,7 +38,10 @@ class PreviewControls(Gtk.Box):
         self.set_margin_end(20)
 
         # Create a styled container box
-        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        container = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=12,
+        )
         container.add_css_class("card")
         container.set_margin_top(12)
         container.set_margin_bottom(12)
@@ -46,7 +56,10 @@ class PreviewControls(Gtk.Box):
 
         # Slider for scrubbing
         self.slider = Gtk.Scale.new_with_range(
-            Gtk.Orientation.HORIZONTAL, 0, 100, 1
+            Gtk.Orientation.HORIZONTAL,
+            0,
+            100,
+            1,
         )
         self.slider.set_draw_value(False)
         self.slider.set_hexpand(True)
@@ -55,7 +68,10 @@ class PreviewControls(Gtk.Box):
         container.append(self.slider)
 
         # Button box
-        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        button_box = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=6,
+        )
         button_box.set_halign(Gtk.Align.CENTER)
         container.append(button_box)
 
@@ -77,7 +93,9 @@ class PreviewControls(Gtk.Box):
         self.step_forward_button = Gtk.Button()
         self.step_forward_button.set_icon_name("media-skip-forward-symbolic")
         self.step_forward_button.set_tooltip_text("Step Forward")
-        self.step_forward_button.connect("clicked", self._on_step_forward_clicked)
+        self.step_forward_button.connect(
+            "clicked", self._on_step_forward_clicked
+        )
         button_box.append(self.step_forward_button)
 
         # Speed and Power label
@@ -113,10 +131,15 @@ class PreviewControls(Gtk.Box):
             speed = state.cut_speed if state.cut_speed is not None else 0.0
             power = state.power if state.power is not None else 0.0
             self.speed_power_label.set_markup(
-                f"<small>Speed: {speed:.0f} mm/min  |  Power: {power:.1f}%</small>"
+                (
+                    f"<small>Speed: {speed:.0f} mm/min  |  "
+                    f"Power: {power:.1f}%</small>"
+                )
             )
         else:
-            self.speed_power_label.set_markup("<small>Speed: - | Power: -</small>")
+            self.speed_power_label.set_markup(
+                "<small>Speed: - | Power: -</small>"
+            )
 
     def _on_slider_changed(self, slider):
         """Handles slider value changes."""
@@ -167,7 +190,9 @@ class PreviewControls(Gtk.Box):
 
         # Start playback timer
         ms_per_frame = int(1000 / fps)
-        self.playback_timeout_id = GLib.timeout_add(ms_per_frame, self._advance_step)
+        self.playback_timeout_id = GLib.timeout_add(
+            ms_per_frame, self._advance_step
+        )
 
     def _pause_playback(self):
         """Pauses playback."""

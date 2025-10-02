@@ -63,7 +63,7 @@ class ActionManager:
         # 3D viewpoint radio action (top/front/iso)
         self._add_radio_action(
             "view_3d_viewpoint",
-            self.win.on_view_3d_viewpoint_changed,
+            self.win.on_3d_viewpoint_changed,
             GLib.Variant.new_string("iso"),
         )
         self._add_action(

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, List, Callable, Tuple
+from typing import Optional, List, Callable
 from .. import config
 from ..core.step import Step
 from .modifier import MakeTransparent, ToGrayscale
@@ -8,7 +8,6 @@ from .producer import (
     EdgeTracer,
     FrameProducer,
     MaterialTestGridProducer,
-    MaterialTestGridType,
     Rasterizer,
     ShrinkWrapProducer,
 )
@@ -152,11 +151,10 @@ def create_frame_step(name: Optional[str] = None) -> Step:
 def create_material_test_step(name: Optional[str] = None) -> Step:
     """ Factory to create a Material Test step. """
     assert config.config.machine
-    
     step = Step(
         typelabel=_("Material Test Grid"),
-        name=name
-    )    
+        name=name,
+    )
     step.opsproducer_dict = MaterialTestGridProducer().to_dict()
     # Material test doesn't use image modifiers
     step.modifiers_dicts = []

@@ -53,10 +53,16 @@ class MainMenu(Gio.Menu):
         visibility_group.append(_("Show Workpieces"), "win.show_workpieces")
         visibility_group.append(_("Show Tabs"), "win.show_tabs")
         visibility_group.append(
-            _("Show Camera Image"), "win.toggle_camera_view"
+            _(
+                "Show Camera Image"
+            ),
+            "win.toggle_camera_view",
         )
         visibility_group.append(
-            _("Show Travel Moves"), "win.toggle_travel_view"
+            _(
+                "Show Travel Moves"
+            ),
+            "win.toggle_travel_view",
         )
         view_menu.append_section(None, visibility_group)
 
@@ -66,7 +72,9 @@ class MainMenu(Gio.Menu):
         # Preview toolpath in 3D (F6)
         view_mode_group.append(_("3D View"), "win.view_mode::3d")
         # Simulate operation execution with speed/power visualization (F7)
-        view_mode_group.append(_("Execution Preview"), "win.view_mode::preview")
+        view_mode_group.append(
+            _("Execution Preview"), "win.view_mode::preview"
+        )
         view_menu.append_section(None, view_mode_group)
 
         # 3D Viewpoint options (enabled only when in 3D mode)
@@ -74,16 +82,23 @@ class MainMenu(Gio.Menu):
         # View from above (Z-axis) - Key: 1
         view_3d_viewpoints.append(_("Top View"), "win.view_3d_viewpoint::top")
         # View from front (Y-axis) - Key: 2
-        view_3d_viewpoints.append(_("Front View"), "win.view_3d_viewpoint::front")
+        view_3d_viewpoints.append(
+            _("Front View"), "win.view_3d_viewpoint::front"
+        )
         # View from isometric angle - Key: 3
-        view_3d_viewpoints.append(_("Isometric View"), "win.view_3d_viewpoint::iso")
+        view_3d_viewpoints.append(
+            _("Isometric View"), "win.view_3d_viewpoint::iso"
+        )
         view_menu.append_section(None, view_3d_viewpoints)
 
         # Perspective toggle (separate section, enabled only in 3D mode)
         view_3d_options = Gio.Menu()
         # Switch between perspective and orthographic projection - Key: p
         view_3d_options.append(
-            _("Toggle Perspective"), "win.view_toggle_perspective"
+            _(
+                "Toggle Perspective"
+            ),
+            "win.view_toggle_perspective",
         )
         view_menu.append_section(None, view_3d_options)
         self.append_submenu(_("_View"), view_menu)

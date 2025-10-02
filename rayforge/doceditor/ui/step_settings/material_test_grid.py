@@ -47,8 +47,10 @@ PRESETS = {
 }
 
 
-class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget):
-    """MaterialTestGridProducer UI."""  # noqa: E501
+class MaterialTestGridSettingsWidget(
+    DebounceMixin, StepComponentSettingsWidget
+):
+    """MaterialTestGridProducer UI."""
 
     # Material test defines its own speed/power ranges; hide general settings
     show_general_settings = False
@@ -90,7 +92,8 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
         preset_combo.set_active(0)  # Start with PRESET_NONE selected
 
         preset_row = Adw.ActionRow(
-            title=_("Preset"), subtitle=_("Load common test configurations")
+            title=_("Preset"),
+            subtitle=_("Load common test configurations"),
         )
         preset_row.add_suffix(preset_combo)
         self.add(preset_row)
@@ -107,13 +110,17 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
 
         test_type_row = Adw.ComboRow(
             title=_("Test Type"),
-            subtitle=_("Cut outlines boxes, Engrave fills with raster lines"),
-            model=string_list
+            subtitle=_("Cut: outlines; Engrave: fills with raster lines"),
+            model=string_list,
         )
 
         # Set current value by finding matching string
         current_type = producer.test_type
-        current_text = current_type.value if isinstance(current_type, MaterialTestGridType) else current_type
+        current_text = (
+            current_type.value
+            if isinstance(current_type, MaterialTestGridType)
+            else current_type
+        )
         for i in range(string_list.get_n_items()):
             if string_list.get_string(i) == current_text:
                 test_type_row.set_selected(i)
@@ -143,7 +150,9 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
         )
         self.speed_min_row = Adw.SpinRow(
             title=_("Minimum Speed"),
-            subtitle=_("Starting speed for test grid (mm/min)"),
+            subtitle=_(
+                "Starting speed for test grid (mm/min)"
+            ),
             adjustment=min_adj,
             digits=0,
         )
@@ -159,7 +168,9 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
         )
         self.speed_max_row = Adw.SpinRow(
             title=_("Maximum Speed"),
-            subtitle=_("Ending speed for test grid (mm/min)"),
+            subtitle=_(
+                "Ending speed for test grid (mm/min)"
+            ),
             adjustment=max_adj,
             digits=0,
         )
@@ -520,10 +531,8 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
         """Exits execution preview mode if currently active."""
         if not self.step.doc:
             return
-
         # Find the main window through the document
         from ....mainwindow import MainWindow
-        from gi.repository import Gtk
 
         # Get the root window
         root = self.get_root()
@@ -534,4 +543,6 @@ class MaterialTestGridSettingsWidget(DebounceMixin, StepComponentSettingsWidget)
                 if current_mode == "preview":
                     # Switch back to 2D view
                     action.change_state(GLib.Variant.new_string("2d"))
-                    root.on_view_mode_changed(action, GLib.Variant.new_string("2d"))
+                    root.on_view_mode_changed(
+                        action, GLib.Variant.new_string("2d")
+                    )

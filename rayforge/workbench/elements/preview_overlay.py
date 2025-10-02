@@ -7,7 +7,9 @@ from ..canvas.element import CanvasElement
 
 
 def speed_to_heatmap_color(
-    speed: float, min_speed: float, max_speed: float
+    speed: float,
+    min_speed: float,
+    max_speed: float,
 ) -> Tuple[float, float, float]:
     """
     Converts speed to RGB heatmap color.
@@ -112,7 +114,12 @@ class PreviewOverlay(CanvasElement):
     def __init__(self, work_area_size: Tuple[float, float], **kwargs):
         width_mm, height_mm = work_area_size
         super().__init__(
-            x=0.0, y=0.0, width=width_mm, height=height_mm, buffered=False, **kwargs
+            x=0.0,
+            y=0.0,
+            width=width_mm,
+            height=height_mm,
+            buffered=False,
+            **kwargs,
         )
         self.selectable = False
         self.clip = False
@@ -132,7 +139,9 @@ class PreviewOverlay(CanvasElement):
 
     def set_step(self, step: int):
         """Sets the current playback step."""
-        self.current_step = max(0, min(step, self.timeline.get_step_count() - 1))
+        self.current_step = max(
+            0, min(step, self.timeline.get_step_count() - 1)
+        )
         self.mark_dirty()
 
     def get_step_count(self) -> int:
@@ -200,8 +209,9 @@ class PreviewOverlay(CanvasElement):
                 # Map speed to heatmap color
                 r, g, b = speed_to_heatmap_color(speed, min_speed, max_speed)
 
-                # Map power to transparency: 0% power → 10% opacity, 100% power → 100% opacity
-                # This ensures even low-power moves are still faintly visible
+                # Map power to transparency: 0% → 10% opacity, 100% →
+                # 100% opacity. Ensures even low-power moves remain
+                # faintly visible
                 alpha = 0.1 + (power / 100.0) * 0.9
 
             ctx.set_source_rgba(r, g, b, alpha)
@@ -293,7 +303,11 @@ class PreviewOverlay(CanvasElement):
 
         # Draw labels
         ctx.set_source_rgb(0.0, 0.0, 0.0)
-        ctx.select_font_face("sans-serif", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+        ctx.select_font_face(
+            "sans-serif",
+            cairo.FONT_SLANT_NORMAL,
+            cairo.FONT_WEIGHT_NORMAL,
+        )
         ctx.set_font_size(12)
 
         # Max speed label (top)

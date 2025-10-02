@@ -150,3 +150,9 @@ See `docs/driver.md` for comprehensive driver development guide. Key concepts:
 - OpenGL support optional but recommended for 3D preview
 - Async architecture: most I/O operations are async
 - Configuration auto-saves on application exit
+
+
+## Lint Style
+
+When editing code keep lines 79 characters or less.
+

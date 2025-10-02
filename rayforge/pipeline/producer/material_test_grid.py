@@ -9,7 +9,7 @@ parameters without requiring pixel data.
 from __future__ import annotations
 import logging
 from enum import Enum
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Optional, Tuple, Dict, Any, TYPE_CHECKING
 from .base import OpsProducer, PipelineArtifact, CoordinateSystem
 from ...core.ops import (
     Ops,
@@ -69,13 +69,7 @@ class MaterialTestGridProducer(OpsProducer):
         super().__init__()
         # Handle string-to-enum conversion for deserialization
         if isinstance(test_type, str):
-            try:
-                self.test_type = MaterialTestGridType(test_type)
-            except ValueError:
-                logger.warning(
-                    f"Invalid MaterialTestGridType '{test_type}', falling back to CUT."
-                )
-                self.test_type = MaterialTestGridType.CUT
+            self.test_type = MaterialTestGridType(test_type)
         elif isinstance(test_type, MaterialTestGridType):
             self.test_type = test_type
         else:
@@ -96,6 +90,7 @@ class MaterialTestGridProducer(OpsProducer):
         pixels_per_mm,  # Unused
         *,
         workpiece: Optional[WorkPiece] = None,
+        settings: Optional[Dict[str, Any]] = None,
         y_offset_mm: float = 0.0,
     ) -> PipelineArtifact:
         """
@@ -106,6 +101,7 @@ class MaterialTestGridProducer(OpsProducer):
             surface: Unused - no rendering needed
             pixels_per_mm: Unused
             workpiece: Used only for UID marking in ops sections
+            settings: Unused - no runtime settings needed
             y_offset_mm: Unused
 
         Returns:
@@ -114,9 +110,9 @@ class MaterialTestGridProducer(OpsProducer):
         ops = Ops()
 
         if workpiece:
-            ops.add(
-                OpsSectionStartCommand(SectionType.VECTOR_OUTLINE, workpiece.uid)
-            )
+            ops.add(OpsSectionStartCommand(
+                SectionType.VECTOR_OUTLINE, workpiece.uid
+            ))
 
         # Calculate dimensions for Y-flip calculation
         cols, rows = self.grid_dimensions
@@ -124,9 +120,12 @@ class MaterialTestGridProducer(OpsProducer):
         grid_height = rows * (self.shape_size + self.spacing) - self.spacing
 
         # Generate labels first (if enabled) so they're processed first
-        # The label generator returns the margin sizes it needs (x and y can differ)
+        # The label generator returns the margin sizes it needs
+        # (x and y can differ)
         if self.include_labels:
-            margin_x, margin_y = self._generate_labels(ops, grid_width, grid_height, laser)
+            margin_x, margin_y = self._generate_labels(
+                ops, grid_width, grid_height, laser
+            )
             offset_x = margin_x
             offset_y = margin_y
         else:
@@ -151,31 +150,34 @@ class MaterialTestGridProducer(OpsProducer):
             # Use coordinates as-is (r=0 at y=0)
             if self.test_type == MaterialTestGridType.ENGRAVE:
                 self._draw_filled_box(
-                    ops,
-                    element["x"] + offset_x,
-                    element["y"] + offset_y,
-                    element["width"],
-                    element["height"]
-                )
+                        ops,
+                        element["x"] + offset_x,
+                        element["y"] + offset_y,
+                        element["width"],
+                        element["height"],
+                    )
             else:  # Cut mode
                 self._draw_rectangle(
                     ops,
                     element["x"] + offset_x,
                     element["y"] + offset_y,
                     element["width"],
-                    element["height"]
+                    element["height"],
                 )
 
         if workpiece:
             ops.add(OpsSectionEndCommand(SectionType.VECTOR_OUTLINE))
 
-        # Calculate total dimensions (reuse grid dimensions and margins from above)
+        # Calculate total dimensions (reuse grid dimensions and margins
+        # from above)
         total_width = grid_width + margin_x
         total_height = grid_height + margin_y
 
         logger.info(
-            f"Generated material test grid: {cols}x{rows} cells, "
-            f"{grid_width:.1f}x{grid_height:.1f} mm"
+            (
+                f"Generated material test grid: {cols}x{rows} cells, "
+                f"{grid_width:.1f}x{grid_height:.1f} mm"
+            )
         )
 
         return PipelineArtifact(
@@ -220,8 +222,15 @@ class MaterialTestGridProducer(OpsProducer):
 
         return elements
 
-    def _generate_labels(self, ops: Ops, grid_width: float, grid_height: float, laser) -> tuple[float, float]:
-        """Generates axis labels and numeric annotations.
+    def _generate_labels(
+        self,
+        ops: Ops,
+        grid_width: float,
+        grid_height: float,
+        laser,
+    ) -> tuple[float, float]:
+        """Generates axis labels and numeric annotations using shared
+        layout.
 
         Args:
             ops: Ops container to add label commands to
@@ -230,16 +239,17 @@ class MaterialTestGridProducer(OpsProducer):
             laser: Laser config for power scaling
 
         Returns:
-            Tuple of (margin_x, margin_y) in mm - the margin sizes needed for labels
+            Tuple of (margin_x, margin_y) in mm - the margin sizes needed
+            for labels
         """
         # Calculate font size and scaling
-        font_size = 4.375  # 75% larger than original 2.5
-        font_scale = font_size / 2.5  # 1.75x
+        font_size = 4.375
+        font_scale = font_size / 2.5
 
         # Calculate margins based on font size
-        # For now, use same margin for both axes (could be different in future)
-        margin_x = 15.0 * font_scale  # 26.25mm
-        margin_y = 15.0 * font_scale  # 26.25mm
+        # For now, use same margin for both axes (could differ in future)
+        margin_x = 15.0 * font_scale
+        margin_y = 15.0 * font_scale
         offset_x = margin_x
         offset_y = margin_y
         cols, rows = self.grid_dimensions
@@ -247,8 +257,12 @@ class MaterialTestGridProducer(OpsProducer):
         min_speed, max_speed = self.speed_range
         min_power, max_power = self.power_range
 
-        speed_step = (max_speed - min_speed) / (cols - 1) if cols > 1 else 0
-        power_step = (max_power - min_power) / (rows - 1) if rows > 1 else 0
+        speed_step = (
+            (max_speed - min_speed) / (cols - 1) if cols > 1 else 0
+        )
+        power_step = (
+            (max_power - min_power) / (rows - 1) if rows > 1 else 0
+        )
 
         # Scale label power percentage to machine power range
         # Default to 1000 if laser is None (for testing/compatibility)
@@ -256,13 +270,10 @@ class MaterialTestGridProducer(OpsProducer):
         label_power_percent = 10.0
         label_power = (label_power_percent / 100.0) * max_power
         label_speed = 1000.0
-        font_size = 4.375  # 75% larger than original 2.5
 
-        # Scale label spacing proportionally to font size increase 
-        # Reduced base values to bring labels closer to grid
-        font_scale = font_size / 2.5
-        numeric_label_offset = 3.5 * font_scale  # Reduced from 5.0 to bring closer
-        axis_label_offset = 12.0 * font_scale    
+        # Reduced from 5.0 to bring closer
+        numeric_label_offset = 2.0 * font_scale
+        axis_label_offset = 12.0 * font_scale
 
         # Main axis labels (swapped: X=power, Y=speed)
         x_axis_label = "power (%)"
@@ -277,11 +288,10 @@ class MaterialTestGridProducer(OpsProducer):
         )
         temp_cr.set_font_size(font_size)
 
-        # X-axis label (centered, above grid)
+        # X-axis label centered below
         extents = temp_cr.text_extents(x_axis_label)
         x_pos = grid_width / 2 - extents.width / 2 + offset_x
-        # Label above grid (negative Y), scaled with font size, reduced to bring closer
-        y_pos = -(7.0 * font_scale) + offset_y  # Reduced from 10.0
+        y_pos = -(10.0 * font_scale) + offset_y
         self._text_to_ops(
             x_axis_label,
             x_pos,
@@ -293,35 +303,18 @@ class MaterialTestGridProducer(OpsProducer):
             label_speed,
         )
 
-        # Y-axis label (left of grid, rotated 90 degrees counter-clockwise)
-        # Position needs adjustment to account for rotation and text centering
-        extents = temp_cr.text_extents(y_axis_label)
-
-        x_pos = -axis_label_offset + offset_x
-        # Y-axis label centered vertically
-        grid_center_y = (rows * (self.shape_size + self.spacing) - self.spacing) / 2
-        y_pos = grid_center_y + extents.width / 2 + offset_y
-        self._text_to_ops(
-            y_axis_label,
-            x_pos,
-            y_pos,
-            font_size,
-            "Sans",
-            ops,
-            label_power,
-            label_speed,
-            rotation=-math.pi / 2,  # -90 degrees
-        )
-
-        # Numeric labels for power (X-axis) - swapped from speed, rotated vertically
+        # Numeric labels for (X-axis)
         for c in range(cols):
             current_power = min_power + c * power_step
             label_text = f"{int(current_power)}"
             extents = temp_cr.text_extents(label_text)
             # Center label horizontally in column
-            x_pos = c * (self.shape_size + self.spacing) + self.shape_size / 2 + offset_x
+            x_pos = (
+                c * (self.shape_size + self.spacing)
+                + self.shape_size / 2 - extents.height / 2 + offset_x
+            )
             # Position above grid, accounting for rotated text height
-            y_pos = -numeric_label_offset - extents.width / 2 + offset_y
+            y_pos = -numeric_label_offset + margin_y
             self._text_to_ops(
                 label_text,
                 x_pos,
@@ -334,6 +327,28 @@ class MaterialTestGridProducer(OpsProducer):
                 rotation=-math.pi / 2,  # -90 degrees (vertical)
             )
 
+        # Y-axis label (left of grid, rotated 90 degrees counter-clockwise)
+        # Position needs adjustment to account for rotation and text centering
+        extents = temp_cr.text_extents(y_axis_label)
+
+        x_pos = -axis_label_offset + offset_x
+        # Y-axis label centered vertically
+        grid_center_y = (
+            (rows * (self.shape_size + self.spacing) - self.spacing) / 2
+        )
+        y_pos = grid_center_y + offset_y + extents.width / 2
+        self._text_to_ops(
+            y_axis_label,
+            x_pos,
+            y_pos,
+            font_size,
+            "Sans",
+            ops,
+            label_power,
+            label_speed,
+            rotation=-math.pi / 2,  # -90 degrees
+        )
+
         # Numeric labels for speed (Y-axis) - swapped from power
         for r in range(rows):
             current_speed = min_speed + r * speed_step
@@ -341,8 +356,10 @@ class MaterialTestGridProducer(OpsProducer):
             extents = temp_cr.text_extents(label_text)
             x_pos = -numeric_label_offset - extents.width + offset_x
             # Row center position
-            row_center = r * (self.shape_size + self.spacing) + self.shape_size / 2
-            y_pos = row_center + offset_y
+            row_center = (
+                r * (self.shape_size + self.spacing) + self.shape_size / 2
+            )
+            y_pos = row_center + offset_y - extents.height / 2
             self._text_to_ops(
                 label_text,
                 x_pos,
@@ -394,7 +411,7 @@ class MaterialTestGridProducer(OpsProducer):
 
         # Scale factor to match show_text rendering size
         # Empirically determined to match the rendered text size
-        path_scale = 1.08
+        path_scale = 1
 
         # Pre-compute rotation matrix if needed
         cos_r = math.cos(rotation)
@@ -531,10 +548,18 @@ class MaterialTestGridProducer(OpsProducer):
         """Deserializes a MaterialTestGridProducer from a dictionary."""
         params = data.get("params", {})
         return cls(
-            test_type=MaterialTestGridType(params.get("test_type", MaterialTestGridType.CUT.value)),
-            speed_range=tuple(params.get("speed_range", (100.0, 500.0))),
-            power_range=tuple(params.get("power_range", (10.0, 100.0))),
-            grid_dimensions=tuple(params.get("grid_dimensions", (5, 5))),
+            test_type=MaterialTestGridType(
+                params.get("test_type", MaterialTestGridType.CUT.value)
+            ),
+            speed_range=tuple(
+                params.get("speed_range", (100.0, 500.0))
+            ),
+            power_range=tuple(
+                params.get("power_range", (10.0, 100.0))
+            ),
+            grid_dimensions=tuple(
+                params.get("grid_dimensions", (5, 5))
+            ),
             shape_size=params.get("shape_size", 10.0),
             spacing=params.get("spacing", 2.0),
             include_labels=params.get("include_labels", True),
