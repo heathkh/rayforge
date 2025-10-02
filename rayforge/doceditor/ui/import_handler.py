@@ -103,7 +103,7 @@ def start_interactive_import(win: "MainWindow", editor: "DocEditor"):
     file chooser dialog.
     """
     # Check if the active layer is a material test layer
-    from ...core.materialtestlayer import MaterialTestLayer
+    from ...core.material_test_layer import MaterialTestLayer
     active_layer = editor.doc.active_layer
     if active_layer and isinstance(active_layer, MaterialTestLayer):
         from gi.repository import Adw

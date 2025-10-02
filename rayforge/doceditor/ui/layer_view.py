@@ -2,7 +2,7 @@ import logging
 from gi.repository import Gtk, Gdk, Pango
 from blinker import Signal
 from ...core.stocklayer import StockLayer
-from ...core.materialtestlayer import MaterialTestLayer
+from ...core.material_test_layer import MaterialTestLayer
 from ...core.doc import Doc
 from ...core.layer import Layer
 from ...undo.models.property_cmd import ChangePropertyCommand

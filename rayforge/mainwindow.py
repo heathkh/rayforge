@@ -21,7 +21,7 @@ from .core.matrix import Matrix
 from .core.ops import Ops
 from .core.stock import StockItem
 from .core.stocklayer import StockLayer
-from .core.materialtestlayer import MaterialTestLayer
+from .core.material_test_layer import MaterialTestLayer
 from .core.import_source import ImportSource
 from .pipeline.steps import (
     STEP_FACTORIES,
