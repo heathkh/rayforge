@@ -1,0 +1,3554 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Modern G-code sender and control software for GRBL-based laser cutters and engravers">
+      
+      
+        <meta name="author" content="Rayforge Contributors">
+      
+      
+        <link rel="canonical" href="https://barebaric.github.io/rayforge/dev/machine/grbl-settings/">
+      
+      
+        <link rel="prev" href="../device-config/">
+      
+      
+        <link rel="next" href="../multi-laser/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>GRBL Settings - Rayforge Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config",""),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#grbl-settings" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Rayforge Documentation" class="md-header__button md-logo" aria-label="Rayforge Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rayforge Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GRBL Settings
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/barebaric/rayforge" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    barebaric/rayforge
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ui/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Interface
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../features/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Machine Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../files/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  File Formats
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Troubleshooting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Rayforge Documentation" class="md-nav__button md-logo" aria-label="Rayforge Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Rayforge Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/barebaric/rayforge" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    barebaric/rayforge
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-time-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    First Time Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick Start Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ui/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    User Interface
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Interface
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/main-window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Main Window
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/canvas-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Canvas Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/3d-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3D Preview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings &amp; Preferences
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Features
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/operations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Operations
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Operations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/contour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contour Cutting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/raster/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Raster Engraving
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/depth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Depth Engraving
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/shrink-wrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Shrink Wrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/multi-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Layer Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Camera Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/holding-tabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Holding Tabs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/macros-hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    G-code Macros &amp; Hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/overscan-kerf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overscan &amp; Kerf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Machine Setup
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Profiles
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../device-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Device Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    GRBL Settings
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRBL Settings
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-grbl-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing GRBL Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing GRBL Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from-rayforge" class="md-nav__link">
+    <span class="md-ellipsis">
+      From RayForge
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      From Console
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-settings-for-lasers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Settings for Lasers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Critical Settings for Lasers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#32-laser-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      $32 - Laser Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#30-31-laser-power-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      $30 &amp; $31 - Laser Power Range
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#130-131-maximum-travel" class="md-nav__link">
+    <span class="md-ellipsis">
+      $130 &amp; $131 - Maximum Travel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-by-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings by Category
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings by Category">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stepper-configuration-0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stepper Configuration (\(0-\)6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-reporting-10-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control &amp; Reporting (\(10-\)13)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limits-homing-20-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limits &amp; Homing (\(20-\)27)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spindle-laser-30-32" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spindle &amp; Laser (\(30-\)32)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-calibration-100-102" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Calibration (\(100-\)102)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-kinematics-110-122" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Kinematics (\(110-\)122)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-travel-130-132" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Travel (\(130-\)132)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-configuration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Configuration Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Configuration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-small-diode-laser-300-400mm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typical Small Diode Laser (300 400mm)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#co-laser-without-home-switches" class="md-nav__link">
+    <span class="md-ellipsis">
+      CO Laser Without Home Switches
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backing-up-and-restoring-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backing Up and Restoring Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backing Up and Restoring Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backup-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup Procedure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restore-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restore Procedure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-grbl-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting GRBL Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting GRBL Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cant-write-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Can't write settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-wont-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings won't apply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#machine-behavior-incorrect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine behavior incorrect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lost-all-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lost all settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Topics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grbl-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      GRBL Versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitmask-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitmask Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      External Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi-laser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multiple Lasers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../files/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    File Formats
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            File Formats
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../files/importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Importing Files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../files/formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Supported Formats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../files/exporting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exporting G-code
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../troubleshooting/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Troubleshooting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Connection Issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/common/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Common Problems
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Performance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/snap-permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Permissions (Snap)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/shortcuts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Keyboard Shortcuts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gcode-dialects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    G-code Dialect Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Firmware Compatibility
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Development Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/drivers.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding Device Drivers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-grbl-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing GRBL Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing GRBL Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from-rayforge" class="md-nav__link">
+    <span class="md-ellipsis">
+      From RayForge
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      From Console
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-settings-for-lasers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Settings for Lasers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Critical Settings for Lasers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#32-laser-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      $32 - Laser Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#30-31-laser-power-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      $30 &amp; $31 - Laser Power Range
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#130-131-maximum-travel" class="md-nav__link">
+    <span class="md-ellipsis">
+      $130 &amp; $131 - Maximum Travel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-by-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings by Category
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings by Category">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stepper-configuration-0-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stepper Configuration (\(0-\)6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-reporting-10-13" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control &amp; Reporting (\(10-\)13)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limits-homing-20-27" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limits &amp; Homing (\(20-\)27)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spindle-laser-30-32" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spindle &amp; Laser (\(30-\)32)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-calibration-100-102" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Calibration (\(100-\)102)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-kinematics-110-122" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Kinematics (\(110-\)122)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#axis-travel-130-132" class="md-nav__link">
+    <span class="md-ellipsis">
+      Axis Travel (\(130-\)132)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-configuration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Configuration Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Configuration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-small-diode-laser-300-400mm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typical Small Diode Laser (300 400mm)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#co-laser-without-home-switches" class="md-nav__link">
+    <span class="md-ellipsis">
+      CO Laser Without Home Switches
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backing-up-and-restoring-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backing Up and Restoring Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backing Up and Restoring Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backup-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup Procedure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restore-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Restore Procedure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-grbl-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting GRBL Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting GRBL Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cant-write-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Can't write settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-wont-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings won't apply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#machine-behavior-incorrect" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine behavior incorrect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lost-all-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lost all settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Topics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grbl-versions" class="md-nav__link">
+    <span class="md-ellipsis">
+      GRBL Versions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitmask-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitmask Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      External Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/barebaric/rayforge/edit/main/docs-site/machine/grbl-settings.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/barebaric/rayforge/raw/main/docs-site/machine/grbl-settings.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="grbl-settings">GRBL Settings<a class="headerlink" href="#grbl-settings" title="Permanent link">¶</a></h1>
+<p>GRBL settings (also called "dollar settings" or <code>$$</code> settings) are parameters stored in your controller's EEPROM that control how your laser behaves. Understanding these settings is essential for proper machine configuration and troubleshooting.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution When Changing Settings</p>
+<p>Incorrect GRBL settings can cause your machine to behave unpredictably, lose position, or even damage hardware. Always record original values before making changes, and modify one setting at a time.</p>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>GRBL settings control:</p>
+<ul>
+<li><strong>Motion parameters</strong>: Speed limits, acceleration, calibration</li>
+<li><strong>Limit switches</strong>: Homing behavior, soft/hard limits</li>
+<li><strong>Laser control</strong>: Power range, laser mode enable</li>
+<li><strong>Electrical configuration</strong>: Pin inversions, pullups</li>
+<li><strong>Reporting</strong>: Status message format and frequency</li>
+</ul>
+<p>These settings are stored on your controller (not in RayForge) and persist across power cycles.</p>
+<!-- SCREENSHOT
+id: ui-grbl-settings-panel
+type: screenshot
+size: custom
+region:
+  x: 0
+  y: 0
+  width: 0
+  height: 0
+description: |
+  GRBL settings panel showing:
+  - Category tabs (Stepper, Limits & Homing, Laser, Calibration, etc.)
+  - Settings list with current values
+  - Edit/Reset buttons
+  - Apply changes button
+  - Refresh from device button
+setup:
+  - action: connect_to_device
+  - action: open_preferences
+  - action: navigate_to
+    section: machine
+  - action: open_grbl_settings
+  - action: capture
+    region: settings_panel
+filename: UI-GRBLSettings.png
+alt: "GRBL settings configuration panel"
+-->
+
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="../images/UI-GRBL-Settings.png" data-desc-position="bottom"><img alt="GRBL settings panel" src="../images/UI-GRBL-Settings.png"></a></p>
+<h2 id="accessing-grbl-settings">Accessing GRBL Settings<a class="headerlink" href="#accessing-grbl-settings" title="Permanent link">¶</a></h2>
+<h3 id="from-rayforge">From RayForge<a class="headerlink" href="#from-rayforge" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Menu:</strong> Preferences  Machine  GRBL Settings</li>
+<li>RayForge reads settings from device automatically</li>
+<li>Edit values in the interface</li>
+<li>Click "Apply" to write changes to controller</li>
+</ol>
+<h3 id="from-console">From Console<a class="headerlink" href="#from-console" title="Permanent link">¶</a></h3>
+<p>You can also view/modify settings via G-code console:</p>
+<p><strong>View all settings:</strong>
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$$
+</span></code></pre></div><p></p>
+<p><strong>View single setting:</strong>
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$100
+</span></code></pre></div><p></p>
+<p><strong>Modify setting:</strong>
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$100=80.0
+</span></code></pre></div><p></p>
+<p><strong>Restore defaults:</strong>
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$RST=$
+</span></code></pre></div><p></p>
+<div class="admonition danger">
+<p class="admonition-title">Restore Defaults Erases All Settings</p>
+<p>The <code>$RST=$</code> command resets all GRBL settings to factory defaults. You'll lose any calibration and tuning. Back up your settings first!</p>
+</div>
+<h2 id="critical-settings-for-lasers">Critical Settings for Lasers<a class="headerlink" href="#critical-settings-for-lasers" title="Permanent link">¶</a></h2>
+<p>These settings are most important for laser operation:</p>
+<h3 id="32-laser-mode">$32 - Laser Mode<a class="headerlink" href="#32-laser-mode" title="Permanent link">¶</a></h3>
+<p><strong>Value:</strong> 0 = Disabled, 1 = Enabled</p>
+<p><strong>Purpose:</strong> Enables laser-specific features in GRBL</p>
+<p><strong>When enabled (1):</strong>
+- Laser automatically turns off during G0 (rapid) moves
+- Power dynamically adjusts during acceleration/deceleration
+- Prevents accidental burns during positioning</p>
+<p><strong>When disabled (0):</strong>
+- Laser behaves like a spindle (CNC mode)
+- Doesn't turn off during rapids
+- <strong>Dangerous for laser use!</strong></p>
+<div class="admonition warning">
+<p class="admonition-title">Always Enable Laser Mode</p>
+<p>$32 should <strong>always</strong> be set to 1 for laser cutters. Disabled laser mode can cause unintended burns and fire hazards.</p>
+</div>
+<p><strong>Setting laser mode:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">$</span><span class="m">32</span><span class="k">=</span><span class="m">1</span>
+</span></code></pre></div><p></p>
+<h3 id="30-31-laser-power-range">$30 &amp; $31 - Laser Power Range<a class="headerlink" href="#30-31-laser-power-range" title="Permanent link">¶</a></h3>
+<p><strong><span class="arithmatex">\(30 - Maximum Laser Power (RPM)**
+**\)</span>31 - Minimum Laser Power (RPM)</strong></p>
+<p><strong>Purpose:</strong> Defines the power range for S commands</p>
+<p><strong>Typical values:</strong>
+- $30=1000, $31=0 (S0-S1000 range, most common)
+- $30=255, $31=0 (S0-S255 range, some controllers)
+- $30=1000, $31=10 (prevents laser from dropping below 1%)</p>
+<p><strong>How it works:</strong>
+- <code>S1000</code>  $30 value  100% laser power
+- <code>S500</code>  50% of $30  50% laser power
+- <code>S0</code>  $31 value  Minimum power (typically 0%)</p>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">$</span><span class="m">30</span><span class="k">=</span><span class="m">1000.0</span><span class="w">    </span><span class="c">; Maximum S value = 100% power</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">$</span><span class="m">31</span><span class="k">=</span><span class="m">0.0</span><span class="w">       </span><span class="c">; Minimum S value = 0% power</span>
+</span></code></pre></div><p></p>
+<div class="admonition tip">
+<p class="admonition-title">Matching RayForge Configuration</p>
+<p>The "Max Power" setting in your <a href="../profiles/">Machine Profile</a> should match your $30 value. If $30=1000, set max power to 1000 in RayForge.</p>
+</div>
+<h3 id="130-131-maximum-travel">$130 &amp; $131 - Maximum Travel<a class="headerlink" href="#130-131-maximum-travel" title="Permanent link">¶</a></h3>
+<p><strong><span class="arithmatex">\(130 - X Maximum Travel (mm)**
+**\)</span>131 - Y Maximum Travel (mm)</strong></p>
+<p><strong>Purpose:</strong> Defines your machine's working area</p>
+<p><strong>Typical values:</strong>
+- $130=300, $131=200 (300mm  200mm bed)
+- $130=400, $131=400 (400mm  400mm bed)
+- $130=1000, $131=600 (large format laser)</p>
+<p><strong>Why it matters:</strong>
+- Soft limits ($20) use these values to prevent crashes
+- Defines the coordinate system bounds
+- Must match your physical machine size</p>
+<p><strong>Measuring your bed:</strong>
+1. Manually jog to maximum X position
+2. Note X position from status (<code>?</code> command)
+3. Set <span class="arithmatex">\(130 to that value
+4. Repeat for Y axis (\)</span>131)</p>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">$</span><span class="m">130</span><span class="k">=</span><span class="m">400.0</span><span class="w">    </span><span class="c">; X-axis can travel 400mm</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">$</span><span class="m">131</span><span class="k">=</span><span class="m">300.0</span><span class="w">    </span><span class="c">; Y-axis can travel 300mm</span>
+</span></code></pre></div><p></p>
+<h2 id="settings-by-category">Settings by Category<a class="headerlink" href="#settings-by-category" title="Permanent link">¶</a></h2>
+<h3 id="stepper-configuration-0-6">Stepper Configuration (<span class="arithmatex">\(0-\)</span>6)<a class="headerlink" href="#stepper-configuration-0-6" title="Permanent link">¶</a></h3>
+<p>Controls stepper motor electrical signals and timing.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Typical Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0</td>
+<td>Step pulse time ( s)</td>
+<td>10</td>
+<td>How long step signal lasts</td>
+</tr>
+<tr>
+<td>$1</td>
+<td>Step idle delay (ms)</td>
+<td>25</td>
+<td>Delay before disabling steppers</td>
+</tr>
+<tr>
+<td>$2</td>
+<td>Step pulse invert (mask)</td>
+<td>0</td>
+<td>Invert step signal (rare)</td>
+</tr>
+<tr>
+<td>$3</td>
+<td>Step direction invert (mask)</td>
+<td>0</td>
+<td>Reverse motor direction</td>
+</tr>
+<tr>
+<td>$4</td>
+<td>Invert step enable pin</td>
+<td>0</td>
+<td>Invert stepper enable signal</td>
+</tr>
+<tr>
+<td>$5</td>
+<td>Invert limit pins</td>
+<td>0</td>
+<td>Invert limit switch logic</td>
+</tr>
+<tr>
+<td>$6</td>
+<td>Invert probe pin</td>
+<td>0</td>
+<td>Invert probe signal (not used for lasers)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to change:</strong>
+- Motors run backwards: Adjust $3
+- Stepper driver compatibility: Adjust $0 or $4
+- Limit switches trigger incorrectly: Adjust $5</p>
+<p><strong>Example - Inverting Y direction:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">$</span><span class="m">3</span><span class="k">=</span><span class="m">2</span><span class="w">          </span><span class="c">; Bit 1 set (binary 10 = Y-axis inverted)</span>
+</span></code></pre></div><p></p>
+<h3 id="control-reporting-10-13">Control &amp; Reporting (<span class="arithmatex">\(10-\)</span>13)<a class="headerlink" href="#control-reporting-10-13" title="Permanent link">¶</a></h3>
+<p>Controls motion planning and status report format.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Typical Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$10</td>
+<td>Status report options (mask)</td>
+<td>1</td>
+<td>WPos=1, MPos=0</td>
+</tr>
+<tr>
+<td>$11</td>
+<td>Junction deviation (mm)</td>
+<td>0.010</td>
+<td>Cornering speed (lower = sharper)</td>
+</tr>
+<tr>
+<td>$12</td>
+<td>Arc tolerance (mm)</td>
+<td>0.002</td>
+<td>Accuracy of curved paths</td>
+</tr>
+<tr>
+<td>$13</td>
+<td>Report in inches</td>
+<td>0</td>
+<td>0=mm, 1=inches</td>
+</tr>
+</tbody>
+</table>
+<p><strong>$11 - Junction Deviation:</strong>
+- <strong>Lower (0.005-0.010)</strong>: Sharp corners, slower on curves, better accuracy
+- <strong>Higher (0.020-0.050)</strong>: Smoother motion, faster on curves, slightly rounded corners
+- <strong>Laser typical</strong>: 0.010mm works well for most jobs</p>
+<p><strong>$12 - Arc Tolerance:</strong>
+- Defines how finely arcs are approximated
+- Lower = smoother circles, more G-code commands
+- 0.002mm is good for most work</p>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">$</span><span class="m">10</span><span class="k">=</span><span class="m">1</span><span class="w">         </span><span class="c">; Report work position (WPos)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">$</span><span class="m">11</span><span class="k">=</span><span class="m">0.010</span><span class="w">     </span><span class="c">; 0.010mm junction deviation</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">$</span><span class="m">12</span><span class="k">=</span><span class="m">0.002</span><span class="w">     </span><span class="c">; 0.002mm arc tolerance</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">$</span><span class="m">13</span><span class="k">=</span><span class="m">0</span><span class="w">         </span><span class="c">; Report in millimeters</span>
+</span></code></pre></div><p></p>
+<h3 id="limits-homing-20-27">Limits &amp; Homing (<span class="arithmatex">\(20-\)</span>27)<a class="headerlink" href="#limits-homing-20-27" title="Permanent link">¶</a></h3>
+<p>Controls limit switches and homing behavior.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Typical Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$20</td>
+<td>Soft limits enable</td>
+<td>0 or 1</td>
+<td>Prevents moves beyond <span class="arithmatex">\(130/\)</span>131</td>
+</tr>
+<tr>
+<td>$21</td>
+<td>Hard limits enable</td>
+<td>0</td>
+<td>Physical limit switch protection</td>
+</tr>
+<tr>
+<td>$22</td>
+<td>Homing cycle enable</td>
+<td>0 or 1</td>
+<td>Enable $H homing command</td>
+</tr>
+<tr>
+<td>$23</td>
+<td>Homing direction invert (mask)</td>
+<td>0</td>
+<td>Which direction to home</td>
+</tr>
+<tr>
+<td>$24</td>
+<td>Homing locate feed rate (mm/min)</td>
+<td>25</td>
+<td>Slow approach speed</td>
+</tr>
+<tr>
+<td>$25</td>
+<td>Homing search seek rate (mm/min)</td>
+<td>500</td>
+<td>Fast search speed</td>
+</tr>
+<tr>
+<td>$26</td>
+<td>Homing debounce delay (ms)</td>
+<td>250</td>
+<td>Switch debounce time</td>
+</tr>
+<tr>
+<td>$27</td>
+<td>Homing pull-off distance (mm)</td>
+<td>1.0</td>
+<td>Distance to back off switch</td>
+</tr>
+</tbody>
+</table>
+<p><strong>$20 - Soft Limits:</strong>
+- <strong>Enabled (1)</strong>: Controller prevents moves beyond <span class="arithmatex">\(130/\)</span>131
+- <strong>Disabled (0)</strong>: No software travel limits
+- Requires homing to work (must know position)
+- Recommended if you have home switches</p>
+<p><strong>$21 - Hard Limits:</strong>
+- <strong>Enabled (1)</strong>: Triggers alarm if limit switch activated
+- <strong>Disabled (0)</strong>: Limit switches ignored (except during homing)
+- Can cause nuisance alarms if switches are sensitive
+- Often left disabled on lasers</p>
+<p><strong>$22 - Homing Enable:</strong>
+- <strong>Enabled (1)</strong>: <code>$H</code> command performs homing cycle
+- <strong>Disabled (0)</strong>: Homing not available
+- Only enable if you have home switches installed</p>
+<p><strong>Homing cycle process:</strong>
+1. Rapid search (<span class="arithmatex">\(25 speed) until switch triggers
+2. Back off pull-off distance (\)</span>27)
+3. Slow approach ($24 speed) for precise location
+4. Back off to pull-off distance
+5. Set position to (0,0)</p>
+<p><strong>Example - Machine with home switches:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">$</span><span class="m">20</span><span class="k">=</span><span class="m">1</span><span class="w">         </span><span class="c">; Enable soft limits</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">$</span><span class="m">21</span><span class="k">=</span><span class="m">0</span><span class="w">         </span><span class="c">; Disable hard limits (optional)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">$</span><span class="m">22</span><span class="k">=</span><span class="m">1</span><span class="w">         </span><span class="c">; Enable homing</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="k">$</span><span class="m">23</span><span class="k">=</span><span class="m">0</span><span class="w">         </span><span class="c">; Home to min (default)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">$</span><span class="m">24</span><span class="k">=</span><span class="m">50.0</span><span class="w">      </span><span class="c">; Slow approach at 50mm/min</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="k">$</span><span class="m">25</span><span class="k">=</span><span class="m">1000.0</span><span class="w">    </span><span class="c">; Fast search at 1000mm/min</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="k">$</span><span class="m">26</span><span class="k">=</span><span class="m">250</span><span class="w">       </span><span class="c">; 250ms debounce</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="k">$</span><span class="m">27</span><span class="k">=</span><span class="m">2.0</span><span class="w">       </span><span class="c">; Pull off 2mm from switch</span>
+</span></code></pre></div><p></p>
+<h3 id="spindle-laser-30-32">Spindle &amp; Laser (<span class="arithmatex">\(30-\)</span>32)<a class="headerlink" href="#spindle-laser-30-32" title="Permanent link">¶</a></h3>
+<p><strong>See "Critical Settings" section above</strong> for detailed explanation of $30, $31, and $32.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Laser Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$30</td>
+<td>Maximum spindle speed</td>
+<td>1000.0</td>
+<td>Max S value (100% power)</td>
+</tr>
+<tr>
+<td>$31</td>
+<td>Minimum spindle speed</td>
+<td>0.0</td>
+<td>Min S value (0% power)</td>
+</tr>
+<tr>
+<td>$32</td>
+<td>Laser mode enable</td>
+<td>1</td>
+<td><strong>MUST be 1 for lasers</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">$</span><span class="m">30</span><span class="k">=</span><span class="m">1000.0</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">$</span><span class="m">31</span><span class="k">=</span><span class="m">0.0</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">$</span><span class="m">32</span><span class="k">=</span><span class="m">1</span><span class="w">         </span><span class="c">; Laser mode ON</span>
+</span></code></pre></div><p></p>
+<h3 id="axis-calibration-100-102">Axis Calibration (<span class="arithmatex">\(100-\)</span>102)<a class="headerlink" href="#axis-calibration-100-102" title="Permanent link">¶</a></h3>
+<p>Defines how many stepper motor steps equal one millimeter of movement.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$100</td>
+<td>X steps/mm</td>
+<td>Depends on pulley/belt/gear ratio</td>
+</tr>
+<tr>
+<td>$101</td>
+<td>Y steps/mm</td>
+<td>Usually same as X for typical lasers</td>
+</tr>
+<tr>
+<td>$102</td>
+<td>Z steps/mm</td>
+<td>Not used on most lasers</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Calculating steps/mm:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>steps/mm = (motor_steps_per_rev  microstepping) / (pulley_teeth  belt_pitch)
+</span></code></pre></div>
+<p><strong>Example calculation:</strong>
+- Motor: 200 steps/rev (1.8  stepper)
+- Microstepping: 16 (typical)
+- Pulley: 20 teeth
+- Belt: GT2 (2mm pitch)</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>steps/mm = (200  16) / (20  2) = 3200 / 40 = 80
+</span></code></pre></div>
+<p><strong>Calibration procedure:</strong>
+1. Mark starting position on bed
+2. Command 100mm move: <code>G0 X100</code>
+3. Measure actual distance traveled
+4. Calculate: <code>new_value = current_value  (100 / actual_distance)</code>
+5. Set new value: <code>$100=new_value</code></p>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">$</span><span class="m">100</span><span class="k">=</span><span class="m">80.0</span><span class="w">     </span><span class="c">; X-axis: 80 steps/mm</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">$</span><span class="m">101</span><span class="k">=</span><span class="m">80.0</span><span class="w">     </span><span class="c">; Y-axis: 80 steps/mm</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">$</span><span class="m">102</span><span class="k">=</span><span class="m">80.0</span><span class="w">     </span><span class="c">; Z-axis: 80 steps/mm (unused)</span>
+</span></code></pre></div><p></p>
+<div class="admonition tip">
+<p class="admonition-title">Calibration Test</p>
+<p>Cut a 100mm  100mm square and measure the result. If it's 102mm  98mm, adjust $100 and $101 accordingly using the formula above.</p>
+</div>
+<h3 id="axis-kinematics-110-122">Axis Kinematics (<span class="arithmatex">\(110-\)</span>122)<a class="headerlink" href="#axis-kinematics-110-122" title="Permanent link">¶</a></h3>
+<p>Controls maximum speed and acceleration for each axis.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Typical Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$110</td>
+<td>X max rate (mm/min)</td>
+<td>5000.0</td>
+<td>Max X speed</td>
+</tr>
+<tr>
+<td>$111</td>
+<td>Y max rate (mm/min)</td>
+<td>5000.0</td>
+<td>Max Y speed</td>
+</tr>
+<tr>
+<td>$112</td>
+<td>Z max rate (mm/min)</td>
+<td>500.0</td>
+<td>Max Z speed (unused)</td>
+</tr>
+<tr>
+<td>$120</td>
+<td>X acceleration (mm/sec )</td>
+<td>500.0</td>
+<td>How fast X accelerates</td>
+</tr>
+<tr>
+<td>$121</td>
+<td>Y acceleration (mm/sec )</td>
+<td>500.0</td>
+<td>How fast Y accelerates</td>
+</tr>
+<tr>
+<td>$122</td>
+<td>Z acceleration (mm/sec )</td>
+<td>100.0</td>
+<td>How fast Z accelerates</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Max rate (<span class="arithmatex">\(110-\)</span>112):</strong>
+- Absolute speed limit for each axis
+- Controller won't exceed these values
+- Should match or exceed your machine profile's max speeds
+- Typical: 3000-6000 mm/min for lasers</p>
+<p><strong>Acceleration (<span class="arithmatex">\(120-\)</span>122):</strong>
+- How quickly machine reaches target speed
+- <strong>Lower (100-300)</strong>: Smooth, slow acceleration, gentler on mechanics
+- <strong>Higher (500-1000)</strong>: Snappy, fast start/stop, may cause vibration
+- Typical: 300-500 mm/sec  for lasers</p>
+<p><strong>Finding safe values:</strong>
+1. Start conservative (max rate: 3000, accel: 300)
+2. Gradually increase while testing
+3. Listen for motor skipping, belt slipping
+4. Watch for excessive vibration or ringing</p>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">$</span><span class="m">110</span><span class="k">=</span><span class="m">4000.0</span><span class="w">   </span><span class="c">; X max 4000 mm/min</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">$</span><span class="m">111</span><span class="k">=</span><span class="m">4000.0</span><span class="w">   </span><span class="c">; Y max 4000 mm/min</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">$</span><span class="m">112</span><span class="k">=</span><span class="m">500.0</span><span class="w">    </span><span class="c">; Z max 500 mm/min</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">$</span><span class="m">120</span><span class="k">=</span><span class="m">400.0</span><span class="w">    </span><span class="c">; X accel 400 mm/sec </span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">$</span><span class="m">121</span><span class="k">=</span><span class="m">400.0</span><span class="w">    </span><span class="c">; Y accel 400 mm/sec </span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">$</span><span class="m">122</span><span class="k">=</span><span class="m">100.0</span><span class="w">    </span><span class="c">; Z accel 100 mm/sec </span>
+</span></code></pre></div><p></p>
+<h3 id="axis-travel-130-132">Axis Travel (<span class="arithmatex">\(130-\)</span>132)<a class="headerlink" href="#axis-travel-130-132" title="Permanent link">¶</a></h3>
+<p><strong>See "Critical Settings" section</strong> for detailed explanation of $130 and $131.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$130</td>
+<td>X max travel (mm)</td>
+<td>Working area width</td>
+</tr>
+<tr>
+<td>$131</td>
+<td>Y max travel (mm)</td>
+<td>Working area depth</td>
+</tr>
+<tr>
+<td>$132</td>
+<td>Z max travel (mm)</td>
+<td>Z travel (if applicable)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">$</span><span class="m">130</span><span class="k">=</span><span class="m">400.0</span><span class="w">    </span><span class="c">; 400mm X travel</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">$</span><span class="m">131</span><span class="k">=</span><span class="m">400.0</span><span class="w">    </span><span class="c">; 400mm Y travel</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">$</span><span class="m">132</span><span class="k">=</span><span class="m">50.0</span><span class="w">     </span><span class="c">; 50mm Z travel (if you have Z-axis)</span>
+</span></code></pre></div><p></p>
+<h2 id="common-configuration-examples">Common Configuration Examples<a class="headerlink" href="#common-configuration-examples" title="Permanent link">¶</a></h2>
+<h3 id="typical-small-diode-laser-300-400mm">Typical Small Diode Laser (300 400mm)<a class="headerlink" href="#typical-small-diode-laser-300-400mm" title="Permanent link">¶</a></h3>
+<div class="language-gcode highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">$</span><span class="m">0</span><span class="k">=</span><span class="m">10</span><span class="w">          </span><span class="c">; Step pulse 10 s</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">$</span><span class="m">1</span><span class="k">=</span><span class="m">255</span><span class="w">         </span><span class="c">; Step idle delay 255ms</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">$</span><span class="m">2</span><span class="k">=</span><span class="m">0</span><span class="w">           </span><span class="c">; No step invert</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">$</span><span class="m">3</span><span class="k">=</span><span class="m">0</span><span class="w">           </span><span class="c">; No direction invert</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">$</span><span class="m">4</span><span class="k">=</span><span class="m">0</span><span class="w">           </span><span class="c">; No enable invert</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="k">$</span><span class="m">5</span><span class="k">=</span><span class="m">0</span><span class="w">           </span><span class="c">; No limit invert</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="k">$</span><span class="m">10</span><span class="k">=</span><span class="m">1</span><span class="w">          </span><span class="c">; Report WPos</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="k">$</span><span class="m">11</span><span class="k">=</span><span class="m">0.010</span><span class="w">      </span><span class="c">; Junction deviation 0.01mm</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="k">$</span><span class="m">12</span><span class="k">=</span><span class="m">0.002</span><span class="w">      </span><span class="c">; Arc tolerance 0.002mm</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="k">$</span><span class="m">13</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Report mm</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="k">$</span><span class="m">20</span><span class="k">=</span><span class="m">1</span><span class="w">          </span><span class="c">; Soft limits enabled</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="k">$</span><span class="m">21</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Hard limits disabled</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="k">$</span><span class="m">22</span><span class="k">=</span><span class="m">1</span><span class="w">          </span><span class="c">; Homing enabled</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="k">$</span><span class="m">23</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Home to min</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="k">$</span><span class="m">24</span><span class="k">=</span><span class="m">50.0</span><span class="w">       </span><span class="c">; Homing feed 50mm/min</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="k">$</span><span class="m">25</span><span class="k">=</span><span class="m">1000.0</span><span class="w">     </span><span class="c">; Homing seek 1000mm/min</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="k">$</span><span class="m">26</span><span class="k">=</span><span class="m">250</span><span class="w">        </span><span class="c">; Homing debounce 250ms</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="k">$</span><span class="m">27</span><span class="k">=</span><span class="m">2.0</span><span class="w">        </span><span class="c">; Homing pull-off 2mm</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="k">$</span><span class="m">30</span><span class="k">=</span><span class="m">1000.0</span><span class="w">     </span><span class="c">; Max power S1000</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="k">$</span><span class="m">31</span><span class="k">=</span><span class="m">0.0</span><span class="w">        </span><span class="c">; Min power S0</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="k">$</span><span class="m">32</span><span class="k">=</span><span class="m">1</span><span class="w">          </span><span class="c">; Laser mode ON</span>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="k">$</span><span class="m">100</span><span class="k">=</span><span class="m">80.0</span><span class="w">      </span><span class="c">; X steps/mm</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="k">$</span><span class="m">101</span><span class="k">=</span><span class="m">80.0</span><span class="w">      </span><span class="c">; Y steps/mm</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="k">$</span><span class="m">102</span><span class="k">=</span><span class="m">80.0</span><span class="w">      </span><span class="c">; Z steps/mm</span>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="k">$</span><span class="m">110</span><span class="k">=</span><span class="m">5000.0</span><span class="w">    </span><span class="c">; X max rate</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a><span class="k">$</span><span class="m">111</span><span class="k">=</span><span class="m">5000.0</span><span class="w">    </span><span class="c">; Y max rate</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a><span class="k">$</span><span class="m">112</span><span class="k">=</span><span class="m">500.0</span><span class="w">     </span><span class="c">; Z max rate</span>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a><span class="k">$</span><span class="m">120</span><span class="k">=</span><span class="m">500.0</span><span class="w">     </span><span class="c">; X accel</span>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a><span class="k">$</span><span class="m">121</span><span class="k">=</span><span class="m">500.0</span><span class="w">     </span><span class="c">; Y accel</span>
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a><span class="k">$</span><span class="m">122</span><span class="k">=</span><span class="m">100.0</span><span class="w">     </span><span class="c">; Z accel</span>
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a><span class="k">$</span><span class="m">130</span><span class="k">=</span><span class="m">400.0</span><span class="w">     </span><span class="c">; X max travel</span>
+</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a><span class="k">$</span><span class="m">131</span><span class="k">=</span><span class="m">300.0</span><span class="w">     </span><span class="c">; Y max travel</span>
+</span><span id="__span-16-33"><a id="__codelineno-16-33" name="__codelineno-16-33" href="#__codelineno-16-33"></a><span class="k">$</span><span class="m">132</span><span class="k">=</span><span class="m">0.0</span><span class="w">       </span><span class="c">; Z max travel</span>
+</span></code></pre></div>
+<h3 id="co-laser-without-home-switches">CO  Laser Without Home Switches<a class="headerlink" href="#co-laser-without-home-switches" title="Permanent link">¶</a></h3>
+<div class="language-gcode highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">$</span><span class="m">0</span><span class="k">=</span><span class="m">10</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">$</span><span class="m">1</span><span class="k">=</span><span class="m">25</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">$</span><span class="m">2</span><span class="k">=</span><span class="m">0</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">$</span><span class="m">3</span><span class="k">=</span><span class="m">0</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">$</span><span class="m">4</span><span class="k">=</span><span class="m">0</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="k">$</span><span class="m">5</span><span class="k">=</span><span class="m">0</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="k">$</span><span class="m">10</span><span class="k">=</span><span class="m">1</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="k">$</span><span class="m">11</span><span class="k">=</span><span class="m">0.010</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="k">$</span><span class="m">12</span><span class="k">=</span><span class="m">0.002</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="k">$</span><span class="m">13</span><span class="k">=</span><span class="m">0</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="k">$</span><span class="m">20</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Soft limits OFF (no homing)</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="k">$</span><span class="m">21</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Hard limits OFF</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="k">$</span><span class="m">22</span><span class="k">=</span><span class="m">0</span><span class="w">          </span><span class="c">; Homing disabled</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="k">$</span><span class="m">30</span><span class="k">=</span><span class="m">1000.0</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="k">$</span><span class="m">31</span><span class="k">=</span><span class="m">0.0</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="k">$</span><span class="m">32</span><span class="k">=</span><span class="m">1</span><span class="w">          </span><span class="c">; Laser mode ON</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="k">$</span><span class="m">100</span><span class="k">=</span><span class="m">157.48</span><span class="w">    </span><span class="c">; Example calibration value</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="k">$</span><span class="m">101</span><span class="k">=</span><span class="m">157.48</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="k">$</span><span class="m">102</span><span class="k">=</span><span class="m">157.48</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="k">$</span><span class="m">110</span><span class="k">=</span><span class="m">3000.0</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="k">$</span><span class="m">111</span><span class="k">=</span><span class="m">3000.0</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="k">$</span><span class="m">112</span><span class="k">=</span><span class="m">500.0</span>
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="k">$</span><span class="m">120</span><span class="k">=</span><span class="m">300.0</span>
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="k">$</span><span class="m">121</span><span class="k">=</span><span class="m">300.0</span>
+</span><span id="__span-17-25"><a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="k">$</span><span class="m">122</span><span class="k">=</span><span class="m">100.0</span>
+</span><span id="__span-17-26"><a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="k">$</span><span class="m">130</span><span class="k">=</span><span class="m">600.0</span><span class="w">     </span><span class="c">; 600 400mm bed</span>
+</span><span id="__span-17-27"><a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="k">$</span><span class="m">131</span><span class="k">=</span><span class="m">400.0</span>
+</span><span id="__span-17-28"><a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="k">$</span><span class="m">132</span><span class="k">=</span><span class="m">0.0</span>
+</span></code></pre></div>
+<h2 id="backing-up-and-restoring-settings">Backing Up and Restoring Settings<a class="headerlink" href="#backing-up-and-restoring-settings" title="Permanent link">¶</a></h2>
+<h3 id="backup-procedure">Backup Procedure<a class="headerlink" href="#backup-procedure" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Via RayForge:</strong></li>
+<li>Open GRBL Settings panel</li>
+<li>Click "Export Settings"</li>
+<li>
+<p>Save file as <code>grbl-backup-YYYY-MM-DD.txt</code></p>
+</li>
+<li>
+<p><strong>Via console:</strong></p>
+</li>
+<li>Send <code>$$</code> command</li>
+<li>Copy all output to text file</li>
+<li>Save with date</li>
+</ol>
+<h3 id="restore-procedure">Restore Procedure<a class="headerlink" href="#restore-procedure" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>From backup file:</strong></li>
+<li>Open file</li>
+<li>Send each line (<code>$100=80.0</code>, etc.) via console</li>
+<li>
+<p>Verify with <code>$$</code> command</p>
+</li>
+<li>
+<p><strong>Via RayForge:</strong></p>
+</li>
+<li>Open GRBL Settings panel</li>
+<li>Click "Import Settings"</li>
+<li>Select backup file</li>
+<li>Review changes and apply</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Regular Backups</p>
+<p>Back up your GRBL settings after any calibration or tuning. Store backups in a safe location (cloud storage, USB drive). This makes recovery quick if settings are lost or corrupted.</p>
+</div>
+<h2 id="troubleshooting-grbl-settings">Troubleshooting GRBL Settings<a class="headerlink" href="#troubleshooting-grbl-settings" title="Permanent link">¶</a></h2>
+<h3 id="cant-write-settings">Can't write settings<a class="headerlink" href="#cant-write-settings" title="Permanent link">¶</a></h3>
+<p><strong>Error:</strong> <code>error:7</code> (Read-only setting)</p>
+<p><strong>Cause:</strong> Setting is locked or doesn't exist</p>
+<p><strong>Fix:</strong>
+- Check setting number is valid for your GRBL version
+- Some settings require specific GRBL compile options</p>
+<hr>
+<p><strong>Error:</strong> <code>error:3</code> (Invalid statement)</p>
+<p><strong>Cause:</strong> Incorrect syntax</p>
+<p><strong>Fix:</strong>
+- Use format: <code>$100=80.0</code> (no spaces around =)
+- Ensure value is appropriate type (number vs. boolean)</p>
+<h3 id="settings-wont-apply">Settings won't apply<a class="headerlink" href="#settings-wont-apply" title="Permanent link">¶</a></h3>
+<p><strong>Symptom:</strong> Changes don't take effect</p>
+<p><strong>Fix:</strong>
+- Send soft reset after changes: <code>Ctrl+X</code> or <code>$X</code>
+- Power cycle controller
+- Verify setting was written: Send <code>$$</code> and check value</p>
+<h3 id="machine-behavior-incorrect">Machine behavior incorrect<a class="headerlink" href="#machine-behavior-incorrect" title="Permanent link">¶</a></h3>
+<p><strong>Symptom:</strong> Motors run backwards</p>
+<p><strong>Fix:</strong>
+- Adjust $3 (direction invert) for affected axis
+- X-axis: $3=1, Y-axis: $3=2, Both: $3=3</p>
+<hr>
+<p><strong>Symptom:</strong> Jobs go out of bounds</p>
+<p><strong>Fix:</strong>
+- Check <span class="arithmatex">\(130/\)</span>131 match your machine size
+- Enable soft limits (<span class="arithmatex">\(20=1) with homing (\)</span>22=1)
+- Verify origin position before starting job</p>
+<hr>
+<p><strong>Symptom:</strong> Laser doesn't turn off during rapids</p>
+<p><strong>Fix:</strong>
+- <strong>CRITICAL</strong>: Set $32=1 (laser mode)
+- Verify with <code>$$</code> that $32 shows value 1
+- Power cycle controller if necessary</p>
+<h3 id="lost-all-settings">Lost all settings<a class="headerlink" href="#lost-all-settings" title="Permanent link">¶</a></h3>
+<p><strong>Cause:</strong> EEPROM cleared, firmware update, or <code>$RST=$</code> command</p>
+<p><strong>Fix:</strong>
+1. Restore from backup file (see "Backing Up" above)
+2. Or recalibrate from scratch:
+   - Start with example config for your machine type
+   - Adjust <span class="arithmatex">\(100/\)</span>101 calibration
+   - Set <span class="arithmatex">\(130/\)</span>131 to bed size
+   - Enable laser mode (<span class="arithmatex">\(32=1)
+   - Set power range (\)</span>30/$31)
+   - Tune speeds and acceleration</p>
+<h2 id="advanced-topics">Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permanent link">¶</a></h2>
+<h3 id="grbl-versions">GRBL Versions<a class="headerlink" href="#grbl-versions" title="Permanent link">¶</a></h3>
+<p>Different GRBL versions support different settings:</p>
+<ul>
+<li><strong>GRBL 0.9:</strong> Older, fewer settings</li>
+<li><strong>GRBL 1.1:</strong> Standard, most common</li>
+<li><strong>Grbl_ESP32:</strong> Extended settings for ESP32 features</li>
+<li><strong>GRBL-Mega:</strong> More axes (A, B, C)</li>
+</ul>
+<p>Check your version:
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>$I
+</span></code></pre></div><p></p>
+<p>Output example:
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>[VER:1.1h.20190825:]
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>[OPT:V,15,128]
+</span></code></pre></div><p></p>
+<h3 id="bitmask-settings">Bitmask Settings<a class="headerlink" href="#bitmask-settings" title="Permanent link">¶</a></h3>
+<p>Some settings use bitmasks (multiple flags in one number):</p>
+<p><strong>$3 - Direction Invert Mask:</strong>
+- Bit 0 (value 1) = X-axis
+- Bit 1 (value 2) = Y-axis
+- Bit 2 (value 4) = Z-axis</p>
+<p><strong>Examples:</strong>
+- $3=0: No inversion
+- $3=1: X inverted
+- $3=2: Y inverted
+- $3=3: X and Y inverted (1+2=3)
+- $3=7: All axes inverted (1+2+4=7)</p>
+<p><strong>$10 - Status Report Mask:</strong>
+- Bit 0 (value 1) = Report work position (WPos)
+- Bit 1 (value 2) = Report buffer data</p>
+<p><strong>Examples:</strong>
+- $10=0: MPos only
+- $10=1: WPos only (recommended)
+- $10=3: WPos + buffer (1+2=3)</p>
+<h2 id="related-topics">Related Topics<a class="headerlink" href="#related-topics" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong><a href="../profiles/">Machine Profiles</a></strong> - Higher-level machine configuration</li>
+<li><strong><a href="../device-config/">Device Configuration</a></strong> - Driver and connection setup</li>
+<li><strong><a href="../../troubleshooting/connection/">Connection Troubleshooting</a></strong> - Fixing connection issues</li>
+<li><strong><a href="../../troubleshooting/common/">Common Problems</a></strong> - General troubleshooting</li>
+</ul>
+<h2 id="external-resources">External Resources<a class="headerlink" href="#external-resources" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="https://github.com/gnea/grbl/wiki/Grbl-v1.1-Configuration">GRBL v1.1 Configuration</a></li>
+<li><a href="https://github.com/gnea/grbl/wiki/Grbl-v1.1-Commands">GRBL v1.1 Commands</a></li>
+<li><a href="https://github.com/bdring/Grbl_Esp32/wiki">Grbl_ESP32 Documentation</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../device-config/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Device Configuration">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Device Configuration
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../multi-laser/" class="md-footer__link md-footer__link--next" aria-label="Next: Multiple Lasers">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Multiple Lasers
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2024-2025 Rayforge Contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/barebaric/rayforge" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/rayforge/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

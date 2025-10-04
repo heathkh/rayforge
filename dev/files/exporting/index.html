@@ -1,0 +1,3560 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Modern G-code sender and control software for GRBL-based laser cutters and engravers">
+      
+      
+        <meta name="author" content="Rayforge Contributors">
+      
+      
+        <link rel="canonical" href="https://barebaric.github.io/rayforge/dev/files/exporting/">
+      
+      
+        <link rel="prev" href="../formats/">
+      
+      
+        <link rel="next" href="../../troubleshooting/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>Exporting G-code - Rayforge Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2a3383ac.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config",""),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#exporting-g-code" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Rayforge Documentation" class="md-header__button md-logo" aria-label="Rayforge Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rayforge Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Exporting G-code
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/barebaric/rayforge" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    barebaric/rayforge
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../ui/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User Interface
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../features/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../machine/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Machine Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  File Formats
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Troubleshooting
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Rayforge Documentation" class="md-nav__button md-logo" aria-label="Rayforge Documentation" data-md-component="logo">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Rayforge Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/barebaric/rayforge" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    barebaric/rayforge
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-time-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    First Time Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quick Start Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../ui/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    User Interface
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Interface
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/main-window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Main Window
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/canvas-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Canvas Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/3d-preview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    3D Preview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings &amp; Preferences
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Features
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Features
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_2">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../features/operations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Operations
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Operations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/contour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contour Cutting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/raster/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Raster Engraving
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/depth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Depth Engraving
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/operations/shrink-wrap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Shrink Wrap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/multi-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multi-Layer Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Camera Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/holding-tabs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Holding Tabs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/macros-hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    G-code Macros &amp; Hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/overscan-kerf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overscan &amp; Kerf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../machine/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Machine Setup
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine/profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Machine Profiles
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine/device-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Device Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine/grbl-settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    GRBL Settings
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine/multi-laser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Multiple Lasers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    File Formats
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            File Formats
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Importing Files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../formats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Supported Formats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Exporting G-code
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exporting G-code
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Export
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-file-menu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: File Menu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-send-to-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Send to Machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 3: Command Line
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-code-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="G-code Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's Included
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-g-code-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example G-code Structure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinate-precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinate Precision
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Dialect
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customizing Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#machine-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hooks-and-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hooks and Macros
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Naming
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Naming">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommended Naming Conventions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Extensions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-size-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Size Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Size Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-file-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typical File Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-g-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verifying G-code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying G-code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preview-before-exporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preview Before Exporting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-exported-g-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking Exported G-code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-to-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending to Machine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sending to Machine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-send" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Send
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-senders" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Senders
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Export
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Export">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-fails-or-hangs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Fails or Hangs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-has-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Has Errors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-wont-load-on-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Won't Load on Controller
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinates-out-of-bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinates Out of Bounds
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-export-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Export Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Export Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-post-processors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Post-Processors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Export
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before Export
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      After Export
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Production
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Pages
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../troubleshooting/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Troubleshooting
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Connection Issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/common/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Common Problems
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Performance
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/snap-permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Permissions (Snap)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/shortcuts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Keyboard Shortcuts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gcode-dialects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    G-code Dialect Support
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Firmware Compatibility
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/development.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Development Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/drivers.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding Device Drivers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Export
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-file-menu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: File Menu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-send-to-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Send to Machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 3: Command Line
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-code-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="G-code Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's Included
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-g-code-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example G-code Structure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinate-precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinate Precision
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-dialect" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Dialect
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customizing Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#machine-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Machine Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hooks-and-macros" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hooks and Macros
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-naming" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Naming
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Naming">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommended Naming Conventions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Extensions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-size-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Size Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Size Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typical-file-sizes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typical File Sizes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verifying-g-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verifying G-code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verifying G-code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preview-before-exporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preview Before Exporting
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-exported-g-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking Exported G-code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-to-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending to Machine
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sending to Machine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#direct-send" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Send
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via File
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-senders" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Senders
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Export
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Export">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-fails-or-hangs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export Fails or Hangs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#g-code-has-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      G-code Has Errors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-wont-load-on-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Won't Load on Controller
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinates-out-of-bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinates Out of Bounds
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-export-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Export Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Export Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-post-processors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Post-Processors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Batch Export
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before Export
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-export" class="md-nav__link">
+    <span class="md-ellipsis">
+      After Export
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Production
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Pages
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/barebaric/rayforge/edit/main/docs-site/files/exporting.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/barebaric/rayforge/raw/main/docs-site/files/exporting.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"></path></svg>
+    </a>
+  
+
+
+<h1 id="exporting-g-code">Exporting G-code<a class="headerlink" href="#exporting-g-code" title="Permanent link">¶</a></h1>
+<p>This page explains how to export G-code from RayForge and customize export settings for your machine.</p>
+<h2 id="quick-export">Quick Export<a class="headerlink" href="#quick-export" title="Permanent link">¶</a></h2>
+<p><strong>Generate G-code for your job:</strong></p>
+<ol>
+<li><strong>Design your job</strong> with layers and operations</li>
+<li><strong>Preview in 3D</strong> to verify (optional)</li>
+<li><strong>File  Export G-code</strong> (or Ctrl+E)</li>
+<li><strong>Choose save location</strong> and filename</li>
+<li><strong>Click Save</strong></li>
+</ol>
+<p>Your G-code file is now ready to send to your machine!</p>
+<hr>
+<h2 id="export-methods">Export Methods<a class="headerlink" href="#export-methods" title="Permanent link">¶</a></h2>
+<h3 id="method-1-file-menu">Method 1: File Menu<a class="headerlink" href="#method-1-file-menu" title="Permanent link">¶</a></h3>
+<p><strong>File  Export G-code</strong> (Ctrl+E)</p>
+<ul>
+<li>Opens file save dialog</li>
+<li>Choose location and filename</li>
+<li>G-code generated and saved</li>
+</ul>
+<h3 id="method-2-send-to-machine">Method 2: Send to Machine<a class="headerlink" href="#method-2-send-to-machine" title="Permanent link">¶</a></h3>
+<p><strong>Machine  Run Job</strong> or click Run button</p>
+<ul>
+<li>G-code generated in memory</li>
+<li>Sent directly to connected machine</li>
+<li>Optionally save to file as well</li>
+</ul>
+<h3 id="method-3-command-line">Method 3: Command Line<a class="headerlink" href="#method-3-command-line" title="Permanent link">¶</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Export from command line (if supported)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>rayforge<span class="w"> </span>--export<span class="w"> </span>output.gcode<span class="w"> </span>input.svg
+</span></code></pre></div>
+<hr>
+<h2 id="g-code-output">G-code Output<a class="headerlink" href="#g-code-output" title="Permanent link">¶</a></h2>
+<h3 id="whats-included">What's Included<a class="headerlink" href="#whats-included" title="Permanent link">¶</a></h3>
+<p>Generated G-code contains:</p>
+<p><strong>Header:</strong>
+- Comments with job information
+- Setup commands (units, positioning mode)
+- Job start hooks (if configured)</p>
+<p><strong>Body:</strong>
+- Toolpath commands for each layer
+- Layer start/end hooks
+- Workpiece start/end hooks
+- Power control commands
+- Feed rate specifications</p>
+<p><strong>Footer:</strong>
+- Job end hooks (if configured)
+- Return to origin (if configured)
+- Laser off, air assist off</p>
+<h3 id="example-g-code-structure">Example G-code Structure<a class="headerlink" href="#example-g-code-structure" title="Permanent link">¶</a></h3>
+<div class="language-gcode highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c">; ==========================================</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c">; Generated by RayForge</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c">; Job: my-project</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c">; Date: 2025-10-03 14:30:00</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c">; ==========================================</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c">; Setup</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">G21 </span><span class="w">                   </span><span class="c">; Millimeters</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">G90 </span><span class="w">                   </span><span class="c">; Absolute positioning</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="nb">M5 </span><span class="w">                    </span><span class="c">; Laser off</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c">; Job Start Hook (if configured)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>$H                     ; Home machine
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="nb">M8 </span><span class="w">                    </span><span class="c">; Air assist on</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c">; Layer 1: Engrave Layer</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c">; Layer Start Hook</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="nb">G0 </span><span class="k">X</span><span class="m">10.000</span><span class="w"> </span><span class="k">Y</span><span class="m">10.000</span><span class="w">    </span><span class="c">; Rapid move to start</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="nb">M3 </span><span class="k">S</span><span class="m">500</span><span class="w">               </span><span class="c">; Laser on at power 500</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="nb">G1 </span><span class="k">X</span><span class="m">50.000</span><span class="w"> </span><span class="k">F</span><span class="m">3000</span><span class="w">      </span><span class="c">; Cut to X50 at 3000mm/min</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c">; ... (more engraving commands)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c">; Layer End Hook</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c">; Layer 2: Cut Layer</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c">; Layer Start Hook</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="nb">G0 </span><span class="k">X</span><span class="m">10.000</span><span class="w"> </span><span class="k">Y</span><span class="m">10.000</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="nb">M3 </span><span class="k">S</span><span class="m">900</span><span class="w">               </span><span class="c">; Laser on at power 900</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="nb">G1 </span><span class="k">X</span><span class="m">50.000</span><span class="w"> </span><span class="k">F</span><span class="m">500</span><span class="w">       </span><span class="c">; Cut at slower speed</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="c">; ... (more cutting commands)</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="c">; Layer End Hook</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="c">; Job End Hook (if configured)</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="nb">M5 </span><span class="w">                    </span><span class="c">; Laser off</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="nb">M9 </span><span class="w">                    </span><span class="c">; Air assist off</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="nb">G0 </span><span class="k">X</span><span class="m">0</span><span class="w"> </span><span class="k">Y</span><span class="m">0</span><span class="w">              </span><span class="c">; Return to origin</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="c">; End of job</span>
+</span></code></pre></div>
+<hr>
+<h2 id="export-settings">Export Settings<a class="headerlink" href="#export-settings" title="Permanent link">¶</a></h2>
+<h3 id="general-settings">General Settings<a class="headerlink" href="#general-settings" title="Permanent link">¶</a></h3>
+<p><strong>Access:</strong> Settings  Machine  G-code Settings</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Values</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Precision</strong></td>
+<td>Decimal places for coordinates</td>
+<td>0-5</td>
+<td>3</td>
+</tr>
+<tr>
+<td><strong>Dialect</strong></td>
+<td>G-code flavor</td>
+<td>GRBL, etc.</td>
+<td>GRBL</td>
+</tr>
+<tr>
+<td><strong>Max Speed</strong></td>
+<td>Maximum travel speed (mm/min)</td>
+<td>Positive number</td>
+<td>3000</td>
+</tr>
+<tr>
+<td><strong>Max Cut Speed</strong></td>
+<td>Maximum cutting speed (mm/min)</td>
+<td>Positive number</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<h3 id="coordinate-precision">Coordinate Precision<a class="headerlink" href="#coordinate-precision" title="Permanent link">¶</a></h3>
+<p><strong>Precision</strong> determines how many decimal places are used for coordinates.</p>
+<p><strong>Examples:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Precision</th>
+<th>Example Output</th>
+<th>Precision Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>G0 X50 Y100</code></td>
+<td>1mm (very coarse)</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>G0 X50.5 Y100.2</code></td>
+<td>0.1mm</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>G0 X50.53 Y100.27</code></td>
+<td>0.01mm</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>G0 X50.532 Y100.271</code></td>
+<td>0.001mm (recommended)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>G0 X50.5320 Y100.2714</code></td>
+<td>0.0001mm (usually unnecessary)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendations:</strong></p>
+<ul>
+<li><strong>Precision 3 (default):</strong> Best for most work (0.001mm = 1 micron)</li>
+<li><strong>Precision 2:</strong> Faster processing, still very accurate</li>
+<li><strong>Precision 4+:</strong> Unnecessary (laser spot size is typically 0.1-0.3mm)</li>
+</ul>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li><strong>Higher precision:</strong> Larger file sizes, longer processing</li>
+<li><strong>Lower precision:</strong> Faster, smaller files, but less smooth curves</li>
+</ul>
+<h3 id="g-code-dialect">G-code Dialect<a class="headerlink" href="#g-code-dialect" title="Permanent link">¶</a></h3>
+<p><strong>Dialect</strong> determines which G-code commands and syntax to use.</p>
+<p><strong>Supported dialects:</strong></p>
+<ul>
+<li><strong>GRBL</strong> (default) - For GRBL firmware controllers</li>
+<li><em>Other dialects may be added in future versions</em></li>
+</ul>
+<p>See <a href="../../reference/gcode-dialects/">G-code Dialects</a> for details.</p>
+<hr>
+<h2 id="customizing-output">Customizing Output<a class="headerlink" href="#customizing-output" title="Permanent link">¶</a></h2>
+<h3 id="machine-configuration">Machine Configuration<a class="headerlink" href="#machine-configuration" title="Permanent link">¶</a></h3>
+<p>Machine settings affect G-code generation:</p>
+<p><strong>Settings  Machine  Profile</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Effect on G-code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Work Area Size</strong></td>
+<td>Warns if job exceeds bounds</td>
+</tr>
+<tr>
+<td><strong>Y-Axis Direction</strong></td>
+<td>Inverts Y coordinates if needed</td>
+</tr>
+<tr>
+<td><strong>Max Speeds</strong></td>
+<td>Enforces speed limits</td>
+</tr>
+</tbody>
+</table>
+<h3 id="hooks-and-macros">Hooks and Macros<a class="headerlink" href="#hooks-and-macros" title="Permanent link">¶</a></h3>
+<p>Inject custom G-code at specific points:</p>
+<p><strong>Settings  Machine  Hooks</strong></p>
+<p><strong>Available hooks:</strong>
+- <strong>Job Start</strong> - Beginning of file
+- <strong>Job End</strong> - End of file
+- <strong>Layer Start</strong> - Before each layer
+- <strong>Layer End</strong> - After each layer
+- <strong>Workpiece Start</strong> - Before each workpiece
+- <strong>Workpiece End</strong> - After each workpiece</p>
+<p><strong>Example Job Start Hook:</strong>
+</p><div class="language-gcode highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$H          ; Home machine
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">G0 </span><span class="k">X</span><span class="m">0</span><span class="w"> </span><span class="k">Y</span><span class="m">0</span><span class="w">    </span><span class="c">; Move to origin</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">M8 </span><span class="w">         </span><span class="c">; Air assist on</span>
+</span></code></pre></div><p></p>
+<p>See <a href="../../features/macros-hooks/">Macros &amp; Hooks</a> for details.</p>
+<hr>
+<h2 id="file-naming">File Naming<a class="headerlink" href="#file-naming" title="Permanent link">¶</a></h2>
+<h3 id="recommended-naming-conventions">Recommended Naming Conventions<a class="headerlink" href="#recommended-naming-conventions" title="Permanent link">¶</a></h3>
+<p><strong>Good filenames:</strong>
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>project-name_material_date.gcode
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>box-3mm-ply_2025-10-03.gcode
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>logo-engrave_v2.nc
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>test-grid_CO2_50W.gcode
+</span></code></pre></div><p></p>
+<p><strong>Include:</strong>
+- Project or part name
+- Material type/thickness (if relevant)
+- Date or version number
+- Machine or settings identifier</p>
+<p><strong>Avoid:</strong>
+- Spaces (use hyphens or underscores)
+- Special characters (some controllers don't support)
+- Very long names (&gt;32 characters may be truncated)</p>
+<h3 id="common-extensions">Common Extensions<a class="headerlink" href="#common-extensions" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Usage</th>
+<th>Compatibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.gcode</code></td>
+<td>Most common</td>
+<td>Widely recognized</td>
+</tr>
+<tr>
+<td><code>.nc</code></td>
+<td>Numerical Control</td>
+<td>CNC standard</td>
+</tr>
+<tr>
+<td><code>.ngc</code></td>
+<td>NGC (Next Generation Controller)</td>
+<td>LinuxCNC, some others</td>
+</tr>
+<tr>
+<td><code>.txt</code></td>
+<td>Plain text</td>
+<td>Universal fallback</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong> Use <code>.gcode</code> for clarity.</p>
+<hr>
+<h2 id="file-size-considerations">File Size Considerations<a class="headerlink" href="#file-size-considerations" title="Permanent link">¶</a></h2>
+<h3 id="typical-file-sizes">Typical File Sizes<a class="headerlink" href="#typical-file-sizes" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Job Type</th>
+<th>Complexity</th>
+<th>File Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Simple cut</strong></td>
+<td>Square or circle</td>
+<td>1-10 KB</td>
+</tr>
+<tr>
+<td><strong>Logo engrave</strong></td>
+<td>Vector paths</td>
+<td>10-100 KB</td>
+</tr>
+<tr>
+<td><strong>Photo engrave</strong></td>
+<td>Raster, 300 DPI, 1010cm</td>
+<td>5-20 MB</td>
+</tr>
+<tr>
+<td><strong>Detailed cut</strong></td>
+<td>Many small paths</td>
+<td>100 KB - 5 MB</td>
+</tr>
+<tr>
+<td><strong>Large photo</strong></td>
+<td>Raster, 500 DPI, 2020cm</td>
+<td>50-100 MB</td>
+</tr>
+</tbody>
+</table>
+<h3 id="large-files">Large Files<a class="headerlink" href="#large-files" title="Permanent link">¶</a></h3>
+<p><strong>Problems with very large G-code files (&gt;50 MB):</strong></p>
+<ul>
+<li>Slow to load on controller</li>
+<li>May exceed controller memory</li>
+<li>Longer processing time</li>
+<li>Transfer delays over serial</li>
+</ul>
+<p><strong>Optimization strategies:</strong></p>
+<ol>
+<li><strong>Reduce raster DPI:</strong></li>
+<li>300-400 DPI is usually sufficient</li>
+<li>
+<p>Higher DPI doesn't improve quality beyond laser resolution</p>
+</li>
+<li>
+<p><strong>Simplify vector paths:</strong></p>
+</li>
+<li>Reduce number of nodes</li>
+<li>
+<p>Use path simplification tools</p>
+</li>
+<li>
+<p><strong>Lower precision:</strong></p>
+</li>
+<li>Precision 2 instead of 3 significantly reduces size</li>
+<li>
+<p>Quality difference is negligible</p>
+</li>
+<li>
+<p><strong>Split large jobs:</strong></p>
+</li>
+<li>Break into multiple files</li>
+<li>
+<p>Run sequentially</p>
+</li>
+<li>
+<p><strong>Reduce overscan:</strong></p>
+</li>
+<li>Less overscan = fewer extra moves</li>
+<li>Balance quality vs file size</li>
+</ol>
+<hr>
+<h2 id="verifying-g-code">Verifying G-code<a class="headerlink" href="#verifying-g-code" title="Permanent link">¶</a></h2>
+<h3 id="preview-before-exporting">Preview Before Exporting<a class="headerlink" href="#preview-before-exporting" title="Permanent link">¶</a></h3>
+<p><strong>Always preview your job:</strong></p>
+<ol>
+<li><strong>3D Preview</strong> - Check layer order and operations</li>
+<li><strong>Simulation Mode</strong> (F7) - Verify execution timing</li>
+<li><strong>Frame Job</strong> - Test boundaries on machine</li>
+</ol>
+<h3 id="checking-exported-g-code">Checking Exported G-code<a class="headerlink" href="#checking-exported-g-code" title="Permanent link">¶</a></h3>
+<p><strong>Manual inspection:</strong></p>
+<ol>
+<li><strong>Open in text editor</strong> to review</li>
+<li><strong>Check header</strong> - Verify setup commands</li>
+<li><strong>Check footer</strong> - Ensure laser turns off</li>
+<li><strong>Scan for errors</strong> - Look for unexpected values</li>
+</ol>
+<p><strong>G-code validators:</strong></p>
+<ul>
+<li><strong>CAMotics</strong> (free) - G-code simulator</li>
+<li><strong>NCViewer</strong> (web-based) - Online G-code visualizer</li>
+<li><strong>Universal G-code Sender</strong> - Has built-in visualizer</li>
+</ul>
+<p><strong>Common issues to check:</strong></p>
+<ul>
+<li>Coordinates within machine bounds</li>
+<li>Feed rates reasonable (not 0, not excessive)</li>
+<li>Power values in valid range (0-1000 for GRBL S parameter)</li>
+<li>No missing laser-off commands</li>
+<li>Proper layer separation</li>
+</ul>
+<hr>
+<h2 id="sending-to-machine">Sending to Machine<a class="headerlink" href="#sending-to-machine" title="Permanent link">¶</a></h2>
+<h3 id="direct-send">Direct Send<a class="headerlink" href="#direct-send" title="Permanent link">¶</a></h3>
+<p><strong>From RayForge:</strong></p>
+<ol>
+<li><strong>Connect to machine</strong> (Machine  Connect)</li>
+<li><strong>Click Run Job</strong> or Machine  Run</li>
+<li><strong>G-code generated and streamed</strong> to controller</li>
+</ol>
+<p><strong>Advantages:</strong>
+- No intermediate file needed
+- Immediate execution
+- Real-time monitoring</p>
+<h3 id="via-file">Via File<a class="headerlink" href="#via-file" title="Permanent link">¶</a></h3>
+<p><strong>Export then load to controller:</strong></p>
+<ol>
+<li><strong>Export G-code</strong> (File  Export)</li>
+<li><strong>Transfer to controller:</strong></li>
+<li>SD card (if controller supports)</li>
+<li>USB flash drive</li>
+<li>Serial upload via UGS or similar</li>
+</ol>
+<p><strong>Advantages:</strong>
+- Keep G-code for re-running jobs
+- Use offline controllers
+- Archive successful jobs</p>
+<h3 id="g-code-senders">G-code Senders<a class="headerlink" href="#g-code-senders" title="Permanent link">¶</a></h3>
+<p><strong>Recommended senders for manual control:</strong></p>
+<ul>
+<li><strong>Universal G-code Sender (UGS)</strong> - Popular, cross-platform</li>
+<li><strong>LightBurn</strong> - Full laser software (alternative to RayForge)</li>
+<li><strong>LaserGRBL</strong> - Windows, GRBL-specific</li>
+<li><strong>bCNC</strong> - Advanced, Linux-focused</li>
+</ul>
+<hr>
+<h2 id="troubleshooting-export">Troubleshooting Export<a class="headerlink" href="#troubleshooting-export" title="Permanent link">¶</a></h2>
+<h3 id="export-fails-or-hangs">Export Fails or Hangs<a class="headerlink" href="#export-fails-or-hangs" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> Export process doesn't complete.</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li><strong>Simplify the job</strong> - Very complex jobs may time out</li>
+<li><strong>Check for errors</strong> - Review console/logs for error messages</li>
+<li><strong>Reduce raster resolution</strong> - Lower DPI</li>
+<li><strong>Close other applications</strong> - Free up system resources</li>
+<li><strong>Save project first</strong> - Ensure work isn't lost</li>
+</ol>
+<h3 id="g-code-has-errors">G-code Has Errors<a class="headerlink" href="#g-code-has-errors" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> Exported G-code contains invalid commands or values.</p>
+<p><strong>Diagnosis:</strong></p>
+<ol>
+<li><strong>Check operation settings</strong> - Invalid power/speed values</li>
+<li><strong>Review transformers</strong> - Broken or misconfigured transformers</li>
+<li><strong>Test simple job</strong> - Export a basic square to isolate issue</li>
+<li><strong>Check logs</strong> - Look for warnings during generation</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Fix invalid settings</li>
+<li>Disable problematic transformers</li>
+<li>Report bug with sample project</li>
+</ul>
+<h3 id="file-wont-load-on-controller">File Won't Load on Controller<a class="headerlink" href="#file-wont-load-on-controller" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> Controller rejects or can't read the G-code file.</p>
+<p><strong>Possible causes:</strong></p>
+<ol>
+<li><strong>Wrong dialect</strong> - GRBL vs other firmware</li>
+<li><strong>Unsupported commands</strong> - Custom commands not recognized</li>
+<li><strong>File too large</strong> - Exceeds controller memory</li>
+<li><strong>Filename issues</strong> - Spaces or special characters</li>
+<li><strong>Line ending format</strong> - Windows vs Unix line endings</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Verify correct dialect selected</li>
+<li>Simplify to reduce file size</li>
+<li>Rename file (no spaces, short name)</li>
+<li>Convert line endings if needed (dos2unix or unix2dos)</li>
+</ul>
+<h3 id="coordinates-out-of-bounds">Coordinates Out of Bounds<a class="headerlink" href="#coordinates-out-of-bounds" title="Permanent link">¶</a></h3>
+<p><strong>Problem:</strong> G-code tries to move outside machine limits.</p>
+<p><strong>Diagnosis:</strong></p>
+<p>Check the Frame feature or G-code for coordinates exceeding work area.</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li><strong>Reposition job</strong> within bounds</li>
+<li><strong>Scale down</strong> if too large</li>
+<li><strong>Check machine dimensions</strong> are correctly configured</li>
+<li><strong>Account for overscan</strong> - Reduces available area</li>
+</ol>
+<hr>
+<h2 id="advanced-export-options">Advanced Export Options<a class="headerlink" href="#advanced-export-options" title="Permanent link">¶</a></h2>
+<h3 id="custom-post-processors">Custom Post-Processors<a class="headerlink" href="#custom-post-processors" title="Permanent link">¶</a></h3>
+<p>For advanced users, custom G-code post-processing may be possible:</p>
+<p><strong>Potential customizations:</strong>
+- Add custom headers/footers
+- Modify command syntax
+- Insert pauses or prompts
+- Translate to other dialects</p>
+<p><strong>Implementation:</strong> Currently limited; consider scripting external post-processor.</p>
+<h3 id="batch-export">Batch Export<a class="headerlink" href="#batch-export" title="Permanent link">¶</a></h3>
+<p><strong>Export multiple projects:</strong></p>
+<p>Currently requires manual export of each project. Scripting batch export may be possible via command-line interface (if available).</p>
+<hr>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">¶</a></h2>
+<h3 id="before-export">Before Export<a class="headerlink" href="#before-export" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Preview in 3D</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Run simulation mode</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Check all layers enabled/disabled as intended</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Verify operations have valid settings</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Test frame on machine (if possible)</li>
+</ul>
+<h3 id="after-export">After Export<a class="headerlink" href="#after-export" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Check file size is reasonable</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Open in text editor and spot-check</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Validate with G-code viewer</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Backup G-code for successful jobs</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled><span class="task-list-indicator"></span></label> Name file descriptively</li>
+</ul>
+<h3 id="for-production">For Production<a class="headerlink" href="#for-production" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Archive successful G-code</strong> - Keep files for repeat jobs</li>
+<li><strong>Version control</strong> - Track changes to settings</li>
+<li><strong>Document settings</strong> - Note material, power, speed in filename or comments</li>
+<li><strong>Test on scrap first</strong> - Verify new exports before production runs</li>
+</ul>
+<hr>
+<h2 id="related-pages">Related Pages<a class="headerlink" href="#related-pages" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../importing/">Importing Files</a> - Getting designs into RayForge</li>
+<li><a href="../formats/">Supported Formats</a> - File format details</li>
+<li><a href="../../reference/gcode-dialects/">G-code Dialects</a> - Dialect differences</li>
+<li><a href="../../features/macros-hooks/">Macros &amp; Hooks</a> - Customizing output</li>
+<li><a href="../../features/simulation-mode/">Simulation Mode</a> - Preview before export</li>
+</ul>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../formats/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Supported Formats">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Supported Formats
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../troubleshooting/" class="md-footer__link md-footer__link--next" aria-label="Next: Troubleshooting">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Troubleshooting
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2024-2025 Rayforge Contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/barebaric/rayforge" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/rayforge/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

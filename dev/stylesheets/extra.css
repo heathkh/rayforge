@@ -1,0 +1,84 @@
+/* Custom styles for Rayforge documentation */
+
+/* Image styling for screenshots */
+.md-content img {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 1.5em 0;
+}
+
+/* Cards styling */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5em 0;
+}
+
+.grid.cards > * {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.grid.cards > *:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Feature list styling */
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.feature-list li {
+  padding: 0.5em 0 0.5em 2em;
+  position: relative;
+}
+
+.feature-list li:before {
+  content: "✓";
+  color: var(--md-accent-fg-color);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Admonition customization for tips */
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-left-color: #00e676;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Version badge */
+.version-badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  font-size: 0.85em;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  background-color: var(--md-accent-fg-color);
+  border-radius: 4px;
+  margin-left: 0.5em;
+}
+
+/* Keyboard shortcut styling */
+kbd {
+  background-color: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+  box-shadow: 0 2px 0 var(--md-default-fg-color--lightest);
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  vertical-align: middle;
+}
