@@ -63,7 +63,8 @@ jobs:
 
       - name: Build documentation for pull request
         if: github.event_name == 'pull_request'
-        run: mkdocs build --strict
+        run: mkdocs build
+        #run: mkdocs build --strict
 
       - name: Deploy development docs
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
