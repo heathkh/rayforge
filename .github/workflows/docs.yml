@@ -9,13 +9,14 @@ on:
   pull_request:
     branches:
       - main
+
+  # This enables a button to manually trigger the workflow in the github actions UI
   workflow_dispatch:
     inputs:
       branch_name:
         description: 'Branch to run workflow on'
         required: true
         default: 'feature/mkdocs'
-
 
 permissions:
   contents: write
@@ -61,15 +62,25 @@ jobs:
             echo "is_release=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build documentation for pull request
+      - name: Build documentation for pull request review
         if: github.event_name == 'pull_request'
-        run: mkdocs build
+        # TODO: Restore the --strict flag after testing
         #run: mkdocs build --strict
+        run: mkdocs build
 
+      - name: Upload artifact for pull request review
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: site/
+      
       - name: Deploy development docs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # TODO: Uncomment line below after done testing
+        #if: github.event_name == 'push' # && github.ref == 'refs/heads/main'
         run: |
           mike deploy --push --update-aliases dev development
+          mike set-default --push dev
 
       - name: Deploy release docs with versioning
         if: steps.get_version.outputs.is_release == 'true'
@@ -78,9 +89,4 @@ jobs:
           mike deploy --push --update-aliases $VERSION latest
           mike set-default --push latest
 
-      - name: Upload artifact for Pages (optional, for review)
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation
-          path: site/
+
