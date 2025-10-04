@@ -279,7 +279,7 @@ To enable automated screenshot generation and maintain consistency, use standard
 ```
 ```
 
-See [SCREENSHOT_SPEC.md](SCREENSHOT_SPEC.md) for complete specification.
+See [markdown_screenshot_spec.md](markdown_screenshot_spec.md) for complete specification.
 
 ### Image Guidelines
 
