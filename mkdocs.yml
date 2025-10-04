@@ -1,0 +1,191 @@
+site_name: Rayforge Documentation
+site_url: https://barebaric.github.io/rayforge/
+site_description: Modern G-code sender and control software for GRBL-based laser cutters and engravers
+site_author: Rayforge Contributors
+repo_url: https://github.com/barebaric/rayforge
+repo_name: barebaric/rayforge
+edit_uri: edit/main/docs-site/
+docs_dir: docs-site
+
+theme:
+  name: material
+  language: en
+  logo: assets/logo.svg
+  favicon: assets/favicon.png
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+plugins:
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      skip_classes:
+        - custom-skip-class-name
+      auto_caption: false
+      caption_position: bottom
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: barebaric
+      repo: rayforge
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  version:
+    provider: mike
+    default: latest
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/barebaric/rayforge
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/rayforge/
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - getting-started/index.md
+      - Installation: getting-started/installation.md
+      - First Time Setup: getting-started/first-time-setup.md
+      - Quick Start Guide: getting-started/quick-start.md
+  - User Interface:
+      - ui/index.md
+      - Main Window: ui/main-window.md
+      - Canvas Tools: ui/canvas-tools.md
+      - 3D Preview: ui/3d-preview.md
+      - Settings & Preferences: ui/settings.md
+  - Features:
+      - features/index.md
+      - Operations:
+          - features/operations/index.md
+          - Contour Cutting: features/operations/contour.md
+          - Raster Engraving: features/operations/raster.md
+          - Depth Engraving: features/operations/depth.md
+          - Shrink Wrap: features/operations/shrink-wrap.md
+      - Multi-Layer Workflow: features/multi-layer.md
+      - Camera Integration: features/camera.md
+      - Holding Tabs: features/holding-tabs.md
+      - G-code Macros & Hooks: features/macros-hooks.md
+      - Overscan & Kerf: features/overscan-kerf.md
+  - Machine Setup:
+      - machine/index.md
+      - Machine Profiles: machine/profiles.md
+      - Device Configuration: machine/device-config.md
+      - GRBL Settings: machine/grbl-settings.md
+      - Multiple Lasers: machine/multi-laser.md
+  - File Formats:
+      - files/index.md
+      - Importing Files: files/importing.md
+      - Supported Formats: files/formats.md
+      - Exporting G-code: files/exporting.md
+  - Troubleshooting:
+      - troubleshooting/index.md
+      - Connection Issues: troubleshooting/connection.md
+      - Common Problems: troubleshooting/common.md
+      - Performance: troubleshooting/performance.md
+      - Permissions (Snap): troubleshooting/snap-permissions.md
+  - Reference:
+      - reference/index.md
+      - Keyboard Shortcuts: reference/shortcuts.md
+      - G-code Dialect Support: reference/gcode-dialects.md
+      - Firmware Compatibility: reference/firmware.md
+  - Contributing:
+      - contributing/index.md
+      - Development Setup: contributing/development.md
+      - Adding Device Drivers: contributing/drivers.md
+
+copyright: Copyright &copy; 2024-2025 Rayforge Contributors

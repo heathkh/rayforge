@@ -7,6 +7,7 @@ platforms = ["linux-64", "osx-64", "win-64"]
 [environments]
 default = { features = ["test"], solve-group = "default" }
 windows-build = { features = ["windows-build", "test"], solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
 
 [dependencies]
 adwaita-icon-theme = "*"
@@ -79,6 +80,14 @@ pytest-cov = "*"
 pygobject-stubs = "*"
 flake8 = "*"
 
+
+[feature.docs.pypi-dependencies]
+mkdocs-material = ">=9.5"
+mkdocs-glightbox = "*"
+mike = ">=2.0"
+pillow = "*"
+cairosvg = "*"
+
 [feature.windows-build.dependencies]
 pyinstaller = "*"
 
@@ -93,8 +102,8 @@ cmd = "rayforge"
 env = { GI_TYPELIB_PATH = "$(pkgconf --variable=typelibdir gobject-introspection-1.0)"}
 cmd = "pytest -v"
 
-[tasks]
 
+[tasks]
 lint = "flake8 --ignore=E127,E128,E121,E123,E126,E203,E226,E24,E704,W503,W504 --builtins=_ rayforge"
 update-translations = "bash scripts/update_translations.sh"
 compile-translations = "bash scripts/update_translations.sh --compile-only"
@@ -142,3 +151,23 @@ depends-on = ["compile-translations"]
 # Builds a source package, ready for upload to a PPA.
 cmd = "bash scripts/build-deb.sh --source"
 depends-on = ["compile-translations"]
+
+# Documentation tasks - these wrap the feature.docs tasks for convenience
+[tasks.docs-serve]
+cmd = "pixi run -e docs _docs-serve"
+
+[tasks.docs-build]
+cmd = "pixi run -e docs _docs-build"
+
+[tasks.docs-deploy]
+cmd = "pixi run -e docs _docs-deploy"
+
+# Internal docs tasks (called by the wrapper tasks above)
+[feature.docs.tasks._docs-serve]
+cmd = "mkdocs serve"
+
+[feature.docs.tasks._docs-build]
+cmd = "mkdocs build"
+
+[feature.docs.tasks._docs-deploy]
+cmd = "mike deploy --push --update-aliases $VERSION latest"
