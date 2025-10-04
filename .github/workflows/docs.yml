@@ -10,6 +10,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch to run workflow on'
+        required: true
+        default: 'feature/mkdocs'
+
 
 permissions:
   contents: write
