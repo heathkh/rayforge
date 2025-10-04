@@ -61,29 +61,35 @@ jobs:
             echo "is_release=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build documentation for pull request
-        if: github.event_name == 'pull_request'
+      - name: Build documentation
         run: mkdocs build
         #run: mkdocs build --strict
 
-      - name: Deploy development docs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          mike deploy --push --update-aliases dev development
-
-      - name: Deploy release docs with versioning
-        if: steps.get_version.outputs.is_release == 'true'
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-          mike deploy --push --update-aliases $VERSION latest
-          mike set-default --push latest
-
-      - name: Upload artifact for Pages (optional, for review)
+      - name: Upload artifact for pull request review
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: site/
+      
+      # - name: Deploy development docs
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   run: |
+      #     mike deploy --push --update-aliases dev development
+
+      # - name: Deploy release docs with versioning
+      #   if: steps.get_version.outputs.is_release == 'true'
+      #   run: |
+      #     VERSION=${{ steps.get_version.outputs.version }}
+      #     mike deploy --push --update-aliases $VERSION latest
+      #     mike set-default --push latest
+
+
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+           path: site/
 
   # Deployment job
   deploy:
