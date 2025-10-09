@@ -4,7 +4,7 @@ Rayforge features a modern, intuitive interface built with GTK4 and Libadwaita. 
 
 ## Interface Overview
 
-![Main Window](../images/ss-main.png)
+![Main Window](../assets/images/ss-main.png)
 
 The Rayforge interface consists of several key areas:
 

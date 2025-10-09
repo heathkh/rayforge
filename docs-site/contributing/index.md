@@ -1,5 +1,12 @@
 # Contributing to Rayforge
 
+
+## Community & Support
+
+- **Report Issues**: [GitHub Issues](https://github.com/barebaric/rayforge/issues)
+- **Source Code**: [GitHub Repository](https://github.com/barebaric/rayforge)
+
+
 We welcome contributions of all kinds! Whether you're fixing bugs, adding features, improving documentation, or helping with packaging, your contributions make Rayforge better for everyone.
 
 ## Ways to Contribute
@@ -30,10 +37,9 @@ Have an idea for a new feature?
 
 Contributing code improvements:
 
-1. **Fork the repository** on GitHub
-2. **Set up your development environment**: See [Development Setup](development.md)
-3. **Create a feature branch**: `git checkout -b feature/your-feature-name`
-4. **Make your changes**: Follow coding conventions
+1. **Fork the repository** on GitHub here 
+2. **Create a feature branch**: `git checkout -b feature/your-feature-name`
+3. **Make your changes**: Follow coding conventions
 5. **Test thoroughly**: Run tests and manual testing
 6. **Submit a pull request**: Describe your changes and why they're needed
 
@@ -54,4 +60,6 @@ Documentation source is in the `docs-site/` directory.
 You can click the "edit this page" button, then submit PRs the same way as
 code contributions.
 
-s
+## About This Documentation
+
+This documentation is designed for end-users of Rayforge. If you're looking for developer documentation, please see the [Development Setup](development.md) guide.

@@ -17,7 +17,7 @@ description: Canvas showing a grayscale image that will be depth engraved, with 
 filename: Ref-Depth-Example.png
 -->
 
-![Depth engraving example](../../images/Ref-Depth-Example.png)
+<!-- ![Depth engraving example](../../assets/images/Ref-Depth-Example.png) -->
 
 ## When to Use Depth Engraving
 
@@ -115,7 +115,7 @@ filename: UI-Depth-Settings.png
 alt: "Depth engraving operation settings dialog"
 -->
 
-![Depth settings](../../images/UI-Depth-Settings.png)
+<!-- ![Depth settings](../../assets/images/UI-Depth-Settings.png) -->
 
 ## Key Settings
 

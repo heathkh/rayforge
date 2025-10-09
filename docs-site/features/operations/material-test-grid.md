@@ -35,7 +35,7 @@ filename: Ref-MaterialTestGrid-Example.png
 alt: "Material test grid example showing 5x5 test pattern with labels"
 -->
 
-![Material test grid example](../../images/Ref-MaterialTestGrid-Example.png)
+<!-- ![Material test grid example](../../assets/images/Ref-MaterialTestGrid-Example.png) -->
 
 ## Creating a Material Test Grid
 
@@ -64,7 +64,7 @@ description: Material Test Grid settings dialog showing preset dropdown with Dio
 filename: UI-MaterialTestGrid-Presets.png
 -->
 
-![Material test grid presets](../../images/UI-MaterialTestGrid-Presets.png)
+<!-- ![Material test grid presets](../../assets/images/UI-MaterialTestGrid-Presets.png) -->
 
 ### Step 3: Configure Parameters
 
@@ -127,7 +127,7 @@ filename: UI-MaterialTestGrid-SettingsDialog.png
 alt: "Material Test Grid settings dialog with all parameters configured"
 -->
 
-![Material test grid settings](../../images/UI-MaterialTestGrid-SettingsDialog.png)
+<!-- ![Material test grid settings](../../assets/images/UI-MaterialTestGrid-SettingsDialog.png) -->
 
 ### Step 4: Generate the Grid
 
@@ -210,7 +210,7 @@ Create a material settings reference:
 | Acrylic (clear) | 3mm | Cut | 300 mm/min | 90% | Clean edge |
 
 !!! tip "Material Database"
-    Consider creating a material library in the [Collections](../../collections/material-library.md) section for quick reference.
+    Consider documenting your material test results for quick reference in future projects.
 
 ## Advanced Usage
 
@@ -329,7 +329,6 @@ The test grid parameters are stored as JSON:
 ## Related Topics
 
 - **[Simulation Mode](../../features/simulation-mode.md)** - Preview test execution before running
-- **[Material Library](../../collections/material-library.md)** - Store and share material settings
 - **[Creating Material Test Guide](../../guides/creating-material-test-grid.md)** - Step-by-step tutorial
 - **[Raster Engraving](raster.md)** - Understanding engrave operations
 - **[Contour Cutting](contour.md)** - Understanding cut operations

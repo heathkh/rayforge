@@ -39,7 +39,7 @@ filename: UI-MultiLaser-Config.png
 alt: "Multi-laser configuration dialog"
 -->
 
-![Multi-laser configuration](../images/UI-Multi-Laser-Config.png)
+<!-- ![Multi-laser configuration](../assets/images/UI-Multi-Laser-Config.png) -->
 
 ## Common Multi-Laser Configurations
 
@@ -137,7 +137,7 @@ filename: UI-SingleHead-Config.png
 alt: "Single laser head configuration dialog"
 -->
 
-![Single head configuration](../images/UI-Single-Head-Config.png)
+<!-- ![Single head configuration](../assets/images/UI-Single-Head-Config.png) -->
 
 **Head Name:**
 - Descriptive label for this laser
@@ -265,7 +265,7 @@ filename: UI-OperationHead-Selector.png
 alt: "Laser head selector in operation settings"
 -->
 
-![Operation head selector](../images/UI-Operation-Head-Selector.png)
+<!-- ![Operation head selector](../assets/images/UI-Operation-Head-Selector.png) -->
 
 **Choosing the right head:**
 
@@ -379,7 +379,7 @@ filename: Ref-MultiLaser-Alignment.png
 alt: "Multi-laser alignment test pattern"
 -->
 
-![Alignment test pattern](../images/Ref-Multi-Laser-Alignment.png)
+<!-- ![Alignment test pattern](../assets/images/Ref-Multi-Laser-Alignment.png) -->
 
 ### Power Calibration
 

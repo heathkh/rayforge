@@ -102,7 +102,7 @@ After installation, verify that Rayforge is working:
 2. You should see the main window with the canvas and toolbar
 3. Check **Help → About** to confirm the installed version
 
-![Rayforge Main Window](../images/ss-main.png)
+![Rayforge Main Window](../assets/images/ss-main.png)
 
 ---
 

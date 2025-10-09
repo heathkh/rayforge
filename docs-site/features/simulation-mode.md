@@ -37,7 +37,7 @@ filename: Ref-SimulationMode-Overview.png
 alt: "Simulation mode showing speed heatmap with playback controls"
 -->
 
-![Simulation mode overview](../images/Ref-SimulationMode-Overview.png)
+<!-- ![Simulation mode overview](../assets/images/Ref-SimulationMode-Overview.png) -->
 
 ## Activating Simulation Mode
 
@@ -101,7 +101,7 @@ filename: Ref-SimulationMode-HeatmapLegend.png
 alt: "Speed heatmap color gradient legend"
 -->
 
-![Speed heatmap legend](../images/Ref-SimulationMode-HeatmapLegend.png)
+<!-- ![Speed heatmap legend](../assets/images/Ref-SimulationMode-HeatmapLegend.png) -->
 
 ### Power Transparency
 
@@ -135,7 +135,7 @@ description: Simulation playback controls showing play button, progress slider a
 filename: UI-SimulationMode-PlaybackControls.png
 -->
 
-![Simulation playback controls](../images/UI-SimulationMode-PlaybackControls.png)
+<!-- ![Simulation playback controls](../assets/images/UI-SimulationMode-PlaybackControls.png) -->
 
 ### Play/Pause Button
 
@@ -332,5 +332,4 @@ Unlike many CAM tools, RayForge lets you **edit workpieces during simulation**:
 
 - **[3D Preview](../ui/3d-preview.md)** - 3D toolpath visualization
 - **[Material Test Grid](operations/material-test-grid.md)** - Use simulation to validate tests
-- **[Using Simulation Mode Guide](../guides/using-simulation-mode.md)** - Step-by-step tutorial
 - **[Simulating Your Job](../getting-started/simulating-your-job.md)** - Getting started guide

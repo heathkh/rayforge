@@ -301,4 +301,3 @@ See [G-code Dialects](../reference/gcode-dialects.md) for details.
 
 - [Importing Files](importing.md) - How to import each format
 - [Exporting G-code](exporting.md) - G-code export options
-- [File Format Specs](../reference/file-format-spec.md) - Technical specifications

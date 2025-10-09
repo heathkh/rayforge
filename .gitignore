@@ -24,3 +24,5 @@ debian/.debhelper
 # MkDocs
 site/
 .cache/
+
+material

@@ -4,7 +4,7 @@ The Rayforge main window is your primary workspace for creating and managing las
 
 ## Window Layout
 
-![Main Window](../images/ss-main.png)
+![Main Window](../assets/images/ss-main.png)
 
 ### 1. Menu Bar
 

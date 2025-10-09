@@ -2,15 +2,6 @@
 
 Welcome to Rayforge! This section will help you install, configure, and run your first laser job.
 
-## Prerequisites
-
-Before you begin, ensure you have:
-
-- A GRBL-based laser cutter or engraver
-- A computer running Linux or Windows
-- A USB cable or network connection to your machine
-- Design files (SVG, DXF, PDF, or images) ready to laser
-
 ## Installation Steps
 
 1. **[Install Rayforge](installation.md)** - Choose your platform and follow the installation guide

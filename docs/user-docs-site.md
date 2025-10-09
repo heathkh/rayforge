@@ -76,19 +76,7 @@ pixi run docs-build
 
 ### Deploy Documentation
 
-Deploy documentation with versioning:
-
-```bash
-# Deploy development version
-VERSION=dev pixi run docs-deploy
-
-# Deploy release version
-VERSION=1.0.0 pixi run docs-deploy
-```
-
-- Pushes to `gh-pages` branch
-- Updates version selector
-- Requires push access to repository
+The git-hub action will publish the new site when merged to main.
 
 
 ## Versioning Workflow

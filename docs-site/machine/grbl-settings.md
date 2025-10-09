@@ -45,7 +45,7 @@ filename: UI-GRBLSettings.png
 alt: "GRBL settings configuration panel"
 -->
 
-![GRBL settings panel](../images/UI-GRBL-Settings.png)
+<!-- ![GRBL settings panel](../assets/images/UI-GRBL-Settings.png) -->
 
 ## Accessing GRBL Settings
 

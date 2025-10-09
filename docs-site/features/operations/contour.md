@@ -17,7 +17,7 @@ description: Canvas showing a design with contour cut paths highlighted, demonst
 filename: Ref-Contour-Example.png
 -->
 
-![Contour cutting example](../../images/Ref-Contour-Example.png)
+<!-- ![Contour cutting example](../../assets/images/Ref-Contour-Example.png) -->
 
 ## When to Use Contour
 
@@ -80,7 +80,7 @@ filename: UI-Contour-Settings.png
 alt: "Contour operation settings dialog"
 -->
 
-![Contour settings](../../images/UI-Contour-Settings.png)
+<!-- ![Contour settings](../../assets/images/UI-Contour-Settings.png) -->
 
 ## Key Settings
 
@@ -145,7 +145,7 @@ description: Diagram showing three squares with on-line, inside, and outside off
 filename: Diag-Contour-PathOffset.png
 -->
 
-![Path offset diagram](../../images/Diag-Contour-PathOffset.png)
+<!-- ![Path offset diagram](../../assets/images/Diag-Contour-PathOffset.png) -->
 
 ### Cut Direction
 
@@ -175,7 +175,7 @@ description: Contour path with holding tabs shown as small gaps in the cutting l
 filename: Ref-Contour-HoldingTabs.png
 -->
 
-![Contour with holding tabs](../../images/Ref-Contour-HoldingTabs.png)
+<!-- ![Contour with holding tabs](../../assets/images/Ref-Contour-HoldingTabs.png) -->
 
 ### Kerf Compensation
 

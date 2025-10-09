@@ -34,7 +34,7 @@ filename: UI-MachineProfile-Selection.png
 alt: "Machine profile selection dialog"
 -->
 
-![Machine profile selection](../images/UI-Machine-Profile-Selection.png)
+<!-- ![Machine profile selection](../assets/images/UI-Machine-Profile-Selection.png) -->
 
 ## Using Built-in Profiles
 
@@ -90,7 +90,7 @@ filename: UI-FirstLaunch-Profile.png
 alt: "First launch profile selection screen"
 -->
 
-![First launch profile selection](../images/UI-First-Launch-Profile.png)
+<!-- ![First launch profile selection](../assets/images/UI-First-Launch-Profile.png) -->
 
 ## Creating Custom Profiles
 
@@ -125,7 +125,7 @@ filename: UI-MachineBasic-Settings.png
 alt: "Machine basic settings dialog"
 -->
 
-![Machine basic settings](../images/UI-Machine-Basic-Settings.png)
+<!-- ![Machine basic settings](../assets/images/UI-Machine-Basic-Settings.png) -->
 
 **Machine Name:**
 - Descriptive name for this profile
@@ -192,7 +192,7 @@ filename: UI-LaserHead-Config.png
 alt: "Laser head configuration dialog"
 -->
 
-![Laser head configuration](../images/UI-Laser-Head-Config.png)
+<!-- ![Laser head configuration](../assets/images/UI-Laser-Head-Config.png) -->
 
 **Head Name:**
 - Descriptive label (e.g., "10W Diode", "CO Tube")
@@ -304,7 +304,7 @@ filename: UI-MachineSelector.png
 alt: "Machine selector dropdown"
 -->
 
-![Machine selector](../images/UI-Machine-Selector.png)
+<!-- ![Machine selector](../assets/images/UI-Machine-Selector.png) -->
 
 **Use cases for multiple profiles:**
 - Different physical machines

@@ -29,7 +29,7 @@ Advanced techniques for complex projects:
 
 ## About These Guides
 
-Each guide is focused on a specific task or goal, providing step-by-step instructions to achieve results quickly. For conceptual understanding, see the [Concepts](../concepts/index.md) section.
+Each guide is focused on a specific task or goal, providing step-by-step instructions to achieve results quickly.
 
 **Guide format:**
 - Clear goal statement
@@ -40,6 +40,5 @@ Each guide is focused on a specific task or goal, providing step-by-step instruc
 
 ## Related Resources
 
-- **[Concepts](../concepts/index.md)** - Foundational knowledge and theory
 - **[Features](../features/index.md)** - Feature reference documentation
 - **[Troubleshooting](../troubleshooting/common.md)** - Problem diagnosis and solutions

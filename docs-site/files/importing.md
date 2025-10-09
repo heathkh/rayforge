@@ -419,5 +419,4 @@ Before importing:
 
 - [Supported Formats](formats.md) - Detailed format specifications
 - [Exporting G-code](exporting.md) - Output options
-- [File Format Specs](../reference/file-format-spec.md) - Technical details
 - [Quick Start](../getting-started/quick-start.md) - First import tutorial
