@@ -9,8 +9,6 @@ on:
   pull_request:
     branches:
       - main
-
-  # This enables a button to manually trigger the workflow in the github actions UI
   workflow_dispatch:
     inputs:
       branch_name:
@@ -18,13 +16,14 @@ on:
         required: true
         default: 'feature/mkdocs'
 
+
 permissions:
   contents: write
   pages: write
   id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,30 +42,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkdocs-material mike pillow cairosvg mkdocs-glightbox
 
-      - name: Configure Git for mike
+      - name: Configure Git 
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-
-      - name: Extract version from tag or use 'dev'
-        id: get_version
-        run: |
-          if [[ $GITHUB_REF == refs/tags/v* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-            echo "alias=latest" >> $GITHUB_OUTPUT
-            echo "is_release=true" >> $GITHUB_OUTPUT
-          else
-            echo "version=dev" >> $GITHUB_OUTPUT
-            echo "alias=dev" >> $GITHUB_OUTPUT
-            echo "is_release=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Build documentation for pull request review
-        if: github.event_name == 'pull_request'
-        # TODO: Restore the --strict flag after testing
-        #run: mkdocs build --strict
+      
+      - name: Build documentation
         run: mkdocs build
+        #run: mkdocs build --strict
 
       - name: Upload artifact for pull request review
         if: github.event_name == 'pull_request'
@@ -75,18 +58,19 @@ jobs:
           name: documentation
           path: site/
       
-      - name: Deploy development docs
-        # TODO: Uncomment line below after done testing
-        #if: github.event_name == 'push' # && github.ref == 'refs/heads/main'
-        run: |
-          mike deploy --push --update-aliases dev development
-          mike set-default --push dev
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+           path: site/
 
-      - name: Deploy release docs with versioning
-        if: steps.get_version.outputs.is_release == 'true'
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-          mike deploy --push --update-aliases $VERSION latest
-          mike set-default --push latest
-
-
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
