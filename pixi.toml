@@ -160,29 +160,17 @@ depends-on = ["compile-translations"]
 cmd = "bash scripts/build-deb.sh --source"
 depends-on = ["compile-translations"]
 
-# Documentation tasks - these wrap the feature.docs tasks for convenience
-[tasks.docs-serve]
-cmd = "pixi run -e docs _docs-serve"
+# Tasks for developing and generating the website
+[tasks.site-serve]
+cmd = "pixi run -e docs _site-serve"
 
-[tasks.docs-build]
-cmd = "pixi run -e docs _docs-build"
-
-[tasks.docs-deploy]
-cmd = "pixi run -e docs _docs-deploy"
+[tasks.site-build]
+cmd = "pixi run -e docs _site-build"
 
 # Internal docs tasks (called by the wrapper tasks above)
-[feature.docs.tasks._docs-serve]
+[feature.docs.tasks._site-serve]
 cmd = "mkdocs serve --livereload --watch-theme"
 
-[feature.docs.tasks._docs-build]
-cmd = "mkdocs build"
+[feature.docs.tasks._site-build]
+cmd = "mkdocs build --strict --clean"
 
-[feature.docs.tasks._docs-deploy]
-cmd = "mike deploy --push --update-aliases $VERSION latest"
-
-# Hugo tasks
-[feature.docs.tasks.hugo-serve]
-cmd = "cd hugo-site && npm install && hugo server"
-
-[feature.docs.tasks.hugo-build]
-cmd = "cd hugo-site && npm install && hugo --minify"

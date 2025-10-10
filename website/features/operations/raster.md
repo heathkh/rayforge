@@ -17,7 +17,7 @@ description: Canvas showing text and graphics filled with raster engraving patte
 filename: Ref-Raster-Example.png
 -->
 
-<!-- ![Raster engraving example](../../assets/images/Ref-Raster-Example.png) -->
+<!-- ![Raster engraving example](../../images/Ref-Raster-Example.png) -->
 
 ## When to Use Raster
 
@@ -82,7 +82,7 @@ filename: UI-Raster-Settings.png
 alt: "Raster operation settings dialog"
 -->
 
-<!-- ![Raster settings](../../assets/images/UI-Raster-Settings.png) -->
+<!-- ![Raster settings](../../images/UI-Raster-Settings.png) -->
 
 ## Key Settings
 
@@ -159,7 +159,7 @@ description: Diagram showing raster scan lines extending beyond the design bound
 filename: Diag-Raster-Overscan.png
 -->
 
-<!-- ![Raster overscan diagram](../../assets/images/Diag-Raster-Overscan.png) -->
+<!-- ![Raster overscan diagram](../../images/Diag-Raster-Overscan.png) -->
 
 ## Grayscale Images
 

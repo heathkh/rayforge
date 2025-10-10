@@ -1,4 +1,4 @@
-name: Documentation
+name: Website
 
 on:
   push:
@@ -32,36 +32,31 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for mike versioning
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          python-version: '3.11'
+          pixi-version: v0.55.0
+          cache: true
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install mkdocs-material mike pillow cairosvg mkdocs-glightbox
-
-      - name: Configure Git 
+      - name: Configure Git
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-      
+
       - name: Build documentation
-        run: mkdocs build
-        #run: mkdocs build --strict
+        run: pixi run site-build
 
       - name: Upload artifact for pull request review
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: documentation
-          path: site/
-      
+          path: build/website/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-           path: site/
+           path: build/website/
 
   # Deployment job
   deploy:

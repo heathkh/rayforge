@@ -62,4 +62,4 @@ code contributions.
 
 ## About This Documentation
 
-This documentation is designed for end-users of Rayforge. If you're looking for developer documentation, please see the [Development Setup](development.md) guide.
+This documentation is designed for end-users of Rayforge. If you're looking for developer documentation, please see the [Developers Documentation](https://github.com/heathkh/rayforge/tree/main/docs) guide.

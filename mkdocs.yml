@@ -4,12 +4,13 @@ site_description: Modern G-code sender and control software for GRBL-based laser
 #site_author: Rayforge Contributors
 repo_url: https://github.com/barebaric/rayforge
 repo_name: barebaric/rayforge
-edit_uri: edit/main/docs-site/
-docs_dir: docs-site
+edit_uri: edit/main/website/
+docs_dir: website
+site_dir: build/website
 
 theme:
   name: material
-  custom_dir: docs-site/overrides
+  custom_dir: website/overrides
   language: en
   logo: assets/rf-logo-01.svg
   favicon: assets/rf-01.png
@@ -214,8 +215,6 @@ nav:
           - Firmware Compatibility: reference/firmware.md
       - Contributing:
           - contributing/index.md
-          - Development Setup: contributing/development.md
-          - Adding Device Drivers: contributing/drivers.md
   - Guides:
       - guides/index.md
       - Achieving Perfect Focus: guides/achieving-perfect-focus.md

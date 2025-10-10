@@ -14,7 +14,7 @@ tags:
 # Multi-Laser Support: Choose Different Lasers for Each Operation
 
 
-![Image title](../../assets/images/camera-overlay.png){align=left width="200px"}
+![Image title](../../images/camera-overlay.png){align=left width="200px"}
 
 
 One of the most powerful features in Rayforge is the ability to assign different lasers to different operations within a single job. This opens up exciting possibilities for multi-tool setups and specialized workflows.

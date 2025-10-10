@@ -12,7 +12,7 @@ tags:
 
 # Welcome to Rayforge: Modern Laser Control Software
 
-![Image title](../../assets/images/ss-main.png){align=left width="200px"}
+![Image title](../../images/ss-main.png){align=left width="200px"}
 
 We're excited to introduce Rayforge, a modern, open-source G-code sender and control software designed specifically for GRBL-based laser cutters and engravers.
 

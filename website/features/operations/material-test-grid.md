@@ -35,7 +35,7 @@ filename: Ref-MaterialTestGrid-Example.png
 alt: "Material test grid example showing 5x5 test pattern with labels"
 -->
 
-<!-- ![Material test grid example](../../assets/images/Ref-MaterialTestGrid-Example.png) -->
+<!-- ![Material test grid example](../../images/Ref-MaterialTestGrid-Example.png) -->
 
 ## Creating a Material Test Grid
 
@@ -64,7 +64,7 @@ description: Material Test Grid settings dialog showing preset dropdown with Dio
 filename: UI-MaterialTestGrid-Presets.png
 -->
 
-<!-- ![Material test grid presets](../../assets/images/UI-MaterialTestGrid-Presets.png) -->
+<!-- ![Material test grid presets](../../images/UI-MaterialTestGrid-Presets.png) -->
 
 ### Step 3: Configure Parameters
 
@@ -127,7 +127,7 @@ filename: UI-MaterialTestGrid-SettingsDialog.png
 alt: "Material Test Grid settings dialog with all parameters configured"
 -->
 
-<!-- ![Material test grid settings](../../assets/images/UI-MaterialTestGrid-SettingsDialog.png) -->
+<!-- ![Material test grid settings](../../images/UI-MaterialTestGrid-SettingsDialog.png) -->
 
 ### Step 4: Generate the Grid
 

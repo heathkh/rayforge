@@ -10,7 +10,7 @@ Start Rayforge from your application menu or by running `rayforge` in a terminal
 
 Navigate to **Settings → Machine Settings** or press ++ctrl+comma++ to open the machine configuration dialog.
 
-![Machine Settings](../assets/images/machine-settings.png)
+![Machine Settings](../images/machine-settings.png)
 
 ## Step 3: Create a Machine Profile
 
@@ -45,7 +45,7 @@ Rayforge supports multiple machine profiles, allowing you to switch between diff
 
 Switch to the **Device** tab to configure how Rayforge connects to your machine.
 
-![Device Settings](../assets/images/machine-device.png)
+![Device Settings](../images/machine-device.png)
 
 ### Connection Types
 
@@ -92,7 +92,7 @@ Switch to the **Device** tab to configure how Rayforge connects to your machine.
    - Go to **Machine → Home** (or press ++ctrl+h++)
    - Your machine should perform a homing cycle
 
-![Connection Status](../assets/images/machine-device.png)
+![Connection Status](../images/machine-device.png)
 
 !!! success "Connected!"
     If your machine responds correctly, you're ready to start using Rayforge!
@@ -108,7 +108,7 @@ Switch to the **Device** tab to configure how Rayforge connects to your machine.
 
 If your machine has multiple laser modules (e.g., diode and CO2), you can configure them in the **Lasers** tab.
 
-![Laser Settings](../assets/images/machine-laser.png)
+![Laser Settings](../images/machine-laser.png)
 
 See [Multiple Lasers](../machine/multi-laser.md) for details.
 
@@ -116,7 +116,7 @@ See [Multiple Lasers](../machine/multi-laser.md) for details.
 
 If you have a USB camera for alignment and positioning, configure it in the **Camera** tab.
 
-![Camera Settings](../assets/images/machine-camera.png)
+![Camera Settings](../images/machine-camera.png)
 
 See [Camera Integration](../features/camera.md) for details.
 

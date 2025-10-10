@@ -32,7 +32,7 @@ filename: UI-DeviceConfig.png
 alt: "Device configuration dialog"
 -->
 
-<!-- ![Device configuration dialog](../assets/images/UI-Device-Config.png) -->
+<!-- ![Device configuration dialog](../images/UI-Device-Config.png) -->
 
 ## Available Drivers
 
@@ -78,7 +78,7 @@ filename: UI-GRBLSerial-Settings.png
 alt: "GRBL Serial driver settings"
 -->
 
-<!-- ![GRBL Serial settings](../assets/images/UI-GRBL-Serial-Settings.png) -->
+<!-- ![GRBL Serial settings](../images/UI-GRBL-Serial-Settings.png) -->
 
 **Port:**
 - Serial port device path
@@ -360,7 +360,7 @@ filename: UI-ConnectionTest-Success.png
 alt: "Successful connection test dialog"
 -->
 
-<!-- ![Connection test success](../assets/images/UI-Connection-Test-Success.png) -->
+<!-- ![Connection test success](../images/UI-Connection-Test-Success.png) -->
 
 ### Verifying Communication
 

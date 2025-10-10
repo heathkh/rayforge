@@ -7,16 +7,13 @@ This document describes the mkdocs-material documentation setup for Rayforge wit
 The documentation system is built using:
 
 - **[MkDocs Material](https://squidfunk.github.io/mkdocs-material/)**: Modern documentation theme
-- **[Mike](https://github.com/jimporter/mike)**: Documentation versioning
 - **GitHub Actions**: Automated deployment
 
 ## Features
 
-✅ **Versioned documentation** - Users can switch between versions (dev, latest, specific releases)
 ✅ **Rich content** - Support for screenshots, code blocks, admonitions, tabs, and more
 ✅ **Search** - Full-text search across all documentation
 ✅ **Responsive** - Works on desktop, tablet, and mobile
-✅ **Dark mode** - Automatic light/dark theme switching
 ✅ **Navigation** - Multi-level navigation with breadcrumbs
 ✅ **Extensible** - Easy to add new pages and sections
 
@@ -25,7 +22,7 @@ The documentation system is built using:
 ```
 rayforge/
 ├── mkdocs.yml              # MkDocs configuration
-├── docs-site/              # Documentation source files
+├── website/                # Documentation source files
 │   ├── index.md           # Homepage
 │   ├── getting-started/   # Installation and setup
 │   ├── ui/                # User interface documentation
@@ -55,7 +52,7 @@ The documentation tasks have been simplified so you don't need to specify the en
 Start a local development server with live reload:
 
 ```bash
-pixi run docs-serve
+pixi run site-serve
 ```
 
 - Opens http://127.0.0.1:8000/
@@ -64,13 +61,13 @@ pixi run docs-serve
 
 ### Build Documentation
 
-Build the static site to the `site/` directory:
+Build the static site to the `build/website/` directory:
 
 ```bash
-pixi run docs-build
+pixi run site-build
 ```
 
-- Creates production-ready HTML in `site/`
+- Creates production-ready HTML in `build/website/`
 - Validates all links and references
 - Use this to test before deploying
 
@@ -87,8 +84,8 @@ Updated automatically when pushing to `main` branch:
 
 ```bash
 git checkout main
-# Make documentation changes in docs-site/
-git add docs-site/
+# Make documentation changes in website/
+git add website/
 git commit -m "docs: update feature guide"
 git push origin main
 ```
@@ -175,7 +172,7 @@ The documentation is deployed to GitHub Pages via the `gh-pages` branch.
 
 To use a custom domain:
 
-1. Add `CNAME` file to `docs-site/` with your domain
+1. Add `CNAME` file to `website/` with your domain
 2. Configure DNS with your domain provider
 3. Update `site_url` in `mkdocs.yml`
 

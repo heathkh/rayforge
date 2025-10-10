@@ -14,7 +14,7 @@ tags:
 
 # 5 Tips for Better Laser Engraving Results with Rayforge
 
-![Image title](../../assets/images/3d-preview.png){align=left width="200px"}
+![Image title](../../images/3d-preview.png){align=left width="200px"}
 
 Getting professional-quality laser engraving results requires more than just good hardware—your software settings and workflow matter too. Here are five tips to help you get the most out of Rayforge. 
 
