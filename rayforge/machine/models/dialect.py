@@ -2,6 +2,11 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 
 
+# Translation placeholder (for future i18n support)
+def _(text: str) -> str:
+    return text
+
+
 _DIALECT_REGISTRY: Dict[str, "GcodeDialect"] = {}
 
 
@@ -48,6 +53,7 @@ class GcodeDialect:
     set_speed: str
     travel_move: str
     linear_move: str
+    linear_move_with_power: str  # For inline power modulation (raster engraving)
     arc_cw: str
     arc_ccw: str
 
@@ -88,6 +94,7 @@ GRBL_DIALECT = GcodeDialect(
     set_speed="",
     travel_move="G0 X{x} Y{y} Z{z}",
     linear_move="G1 X{x} Y{y} Z{z}{f_command}",
+    linear_move_with_power="G1 X{x} Y{y} Z{z}{f_command} S{power}",
     arc_cw="G2 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     arc_ccw="G3 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     air_assist_on="M8",
@@ -111,6 +118,7 @@ GRBL_DIALECT_NOZ = GcodeDialect(
     set_speed="",
     travel_move="G0 X{x} Y{y}",
     linear_move="G1 X{x} Y{y}{f_command}",
+    linear_move_with_power="G1 X{x} Y{y}{f_command} S{power}",
     arc_cw="G2 X{x} Y{y} I{i} J{j}{f_command}",
     arc_ccw="G3 X{x} Y{y} I{i} J{j}{f_command}",
     air_assist_on="M8",
@@ -132,6 +140,7 @@ SMOOTHIEWARE_DIALECT = GcodeDialect(
     set_speed="",
     travel_move="G0 X{x} Y{y} Z{z}{f_command}",
     linear_move="G1 X{x} Y{y} Z{z}{f_command}",
+    linear_move_with_power="G1 X{x} Y{y} Z{z}{f_command} S{power}",
     arc_cw="G2 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     arc_ccw="G3 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     air_assist_on="M8",
@@ -155,6 +164,7 @@ MARLIN_DIALECT = GcodeDialect(
     set_speed="",
     travel_move="G0 X{x} Y{y} Z{z}{f_command}",
     linear_move="G1 X{x} Y{y} Z{z}{f_command}",
+    linear_move_with_power="G1 X{x} Y{y} Z{z}{f_command} S{power}",
     arc_cw="G2 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     arc_ccw="G3 X{x} Y{y} Z{z} I{i} J{j}{f_command}",
     air_assist_on="M8",

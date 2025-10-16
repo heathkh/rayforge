@@ -131,6 +131,43 @@ class LineToCommand(MovingCommand):
         return [self]
 
 
+class LineToWithPowerCommand(MovingCommand):
+    """
+    A linear move command with an associated power level for continuous
+    power modulation during the move. This is used for efficient raster
+    engraving where power varies along a scan line.
+    """
+
+    def __init__(
+        self,
+        end: Tuple[float, float, float],
+        power: float,
+    ) -> None:
+        super().__init__(end)
+        if not (0.0 <= power <= 1.0):
+            raise ValueError(
+                f"Power must be between 0.0 and 1.0, but got {power}"
+            )
+        self.power = power  # Normalized power from 0.0 to 1.0
+
+    def is_cutting_command(self) -> bool:
+        return True
+
+    def to_dict(self) -> Dict[str, Any]:
+        d = super().to_dict()
+        d["power"] = self.power
+        return d
+
+    def linearize(
+        self, start_point: Tuple[float, float, float]
+    ) -> List[Command]:
+        """
+        For encoders that don't support inline power modulation, fall back
+        to SetPower + LineTo sequence.
+        """
+        return [SetPowerCommand(self.power), LineToCommand(self.end)]
+
+
 class ArcToCommand(MovingCommand):
     def __init__(
         self,
@@ -427,8 +464,9 @@ class ScanLinePowerCommand(MovingCommand):
         self, start_point: Tuple[float, float, float]
     ) -> List[Command]:
         """
-        Deconstructs the scan line into an efficient sequence of SetPower and
-        LineTo commands by grouping consecutive pixels of the same power.
+        Deconstructs the scan line into a sequence of LineToWithPowerCommand
+        objects, grouping consecutive pixels of the same power into single
+        segments for efficiency.
         """
         commands: List[Command] = []
         num_steps = len(self.power_values)
@@ -441,7 +479,6 @@ class ScanLinePowerCommand(MovingCommand):
 
         # Start the first segment
         segment_start_power = self.power_values[0]
-        commands.append(SetPowerCommand(segment_start_power / 255.0))
 
         for i in range(1, num_steps):
             current_power = self.power_values[i]
@@ -450,15 +487,20 @@ class ScanLinePowerCommand(MovingCommand):
                 # The geometric end point corresponds to t = i / num_steps.
                 t_end = i / float(num_steps)
                 segment_end_point = p_start_vec + t_end * line_vec
-                commands.append(LineToCommand(tuple(segment_end_point)))
+                commands.append(
+                    LineToWithPowerCommand(
+                        tuple(segment_end_point), segment_start_power / 255.0
+                    )
+                )
 
                 # Start the new segment
                 segment_start_power = current_power
-                commands.append(SetPowerCommand(segment_start_power / 255.0))
 
-        # Add the final LineTo command for the last segment, which always
+        # Add the final segment command for the last segment, which always
         # goes to the very end of the scan line.
-        commands.append(LineToCommand(self.end))
+        commands.append(
+            LineToWithPowerCommand(self.end, segment_start_power / 255.0)
+        )
 
         return commands
 
@@ -524,6 +566,7 @@ COMMAND_TYPE_MAP = {
     LineToCommand: 2,
     ArcToCommand: 3,
     ScanLinePowerCommand: 4,
+    LineToWithPowerCommand: 5,
     SetPowerCommand: 10,
     SetCutSpeedCommand: 11,
     SetTravelSpeedCommand: 12,

@@ -7,6 +7,7 @@ from ...core.ops import (
     Ops,
     MoveToCommand,
     LineToCommand,
+    LineToWithPowerCommand,
     ArcToCommand,
     ScanLinePowerCommand,
     SetPowerCommand,
@@ -113,8 +114,13 @@ class CairoEncoder(OpsEncoder):
                         prev_point_2d = adjusted_end
                         is_first_move = False
 
-                    case LineToCommand() | ArcToCommand():
-                        is_zero_power = math.isclose(current_power, 0.0)
+                    case LineToCommand() | LineToWithPowerCommand() | ArcToCommand():
+                        # For LineToWithPowerCommand, use its inline power value
+                        if isinstance(cmd, LineToWithPowerCommand):
+                            draw_power = cmd.power
+                        else:
+                            draw_power = current_power
+                        is_zero_power = math.isclose(draw_power, 0.0)
                         should_draw = (
                             show_zero_power_moves
                             if is_zero_power
@@ -129,7 +135,7 @@ class CairoEncoder(OpsEncoder):
                             prev_point_2d = adjusted_end
                             continue
 
-                        power_idx = min(255, int(current_power * 255.0))
+                        power_idx = min(255, int(draw_power * 255.0))
                         required_color = (
                             tuple(cut_lut[power_idx])
                             if not is_zero_power
@@ -146,7 +152,7 @@ class CairoEncoder(OpsEncoder):
                             ctx.move_to(*prev_point_2d)
 
                         # Add the command geometry to the current path.
-                        if isinstance(cmd, LineToCommand):
+                        if isinstance(cmd, (LineToCommand, LineToWithPowerCommand)):
                             ctx.line_to(*adjusted_end)
                         else:  # ArcToCommand
                             start_x, start_y = prev_point_2d

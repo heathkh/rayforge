@@ -13,6 +13,7 @@ from ...core.ops import (
     SetLaserCommand,
     MoveToCommand,
     LineToCommand,
+    LineToWithPowerCommand,
     ArcToCommand,
     ScanLinePowerCommand,
     JobStartCommand,
@@ -185,6 +186,9 @@ class GcodeEncoder(OpsEncoder):
             case LineToCommand():
                 self._handle_line_to(context, gcode, *cmd.end)
                 self.current_pos = cmd.end
+            case LineToWithPowerCommand():
+                self._handle_line_to_with_power(context, gcode, cmd.end, cmd.power)
+                self.current_pos = cmd.end
             case ScanLinePowerCommand():
                 # Deconstruct into simpler commands that the encoder already
                 # understands.
@@ -350,6 +354,47 @@ class GcodeEncoder(OpsEncoder):
                 f_command=f_command,
             )
         )
+
+    def _handle_line_to_with_power(
+        self,
+        context: GcodeContext,
+        gcode: List[str],
+        end: Tuple[float, float, float],
+        power: float,
+    ) -> None:
+        """
+        Cutting movement with inline power modulation. This is optimized for
+        raster engraving where power changes continuously. Uses GRBL Laser Mode
+        style inline S values to maintain constant speed.
+        """
+        # Ensure laser is active - but for inline power, we just need M4
+        # without the S value since power is specified inline with G1
+        if not self.laser_active:
+            gcode.append("M4")
+            self.laser_active = True
+
+        # Set modal speed only once per raster line
+        self._emit_modal_speed(gcode, self.cut_speed or 0)
+        f_command = self.dialect.format_feedrate(self.cut_speed)
+
+        # Get absolute power value for the current laser
+        current_laser = self._get_current_laser_head(context)
+        power_abs = power * current_laser.max_power
+        power_val = self.dialect.format_laser_power(power_abs)
+
+        x, y, z = end
+        gcode.append(
+            self.dialect.linear_move_with_power.format(
+                x=self._coord_format.format(x),
+                y=self._coord_format.format(y),
+                z=self._coord_format.format(z),
+                f_command=f_command,
+                power=power_val,
+            )
+        )
+
+        # Update internal power state to match what was emitted
+        self.power = power
 
     def _handle_arc_to(
         self,

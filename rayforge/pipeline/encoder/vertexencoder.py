@@ -5,6 +5,7 @@ from ...core.ops import Ops
 from ...core.ops.commands import (
     MoveToCommand,
     LineToCommand,
+    LineToWithPowerCommand,
     ArcToCommand,
     SetPowerCommand,
     ScanLinePowerCommand,
@@ -73,6 +74,21 @@ class VertexEncoder(OpsEncoder):
                     start_pos, end_pos = current_pos, cmd.end
                     if current_power > 0.0:
                         power_byte = min(255, int(current_power * 255.0))
+                        color = self._grayscale_lut[power_byte]
+                        powered_v.extend(start_pos)
+                        powered_v.extend(end_pos)
+                        powered_c.extend(color)
+                        powered_c.extend(color)
+                    else:
+                        zero_power_v.extend(start_pos)
+                        zero_power_v.extend(end_pos)
+                    current_pos = end_pos
+
+                case LineToWithPowerCommand():
+                    start_pos, end_pos = current_pos, cmd.end
+                    # Use the inline power value from the command
+                    if cmd.power > 0.0:
+                        power_byte = min(255, int(cmd.power * 255.0))
                         color = self._grayscale_lut[power_byte]
                         powered_v.extend(start_pos)
                         powered_v.extend(end_pos)

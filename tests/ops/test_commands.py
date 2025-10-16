@@ -3,6 +3,7 @@ from rayforge.core.ops.commands import (
     ArcToCommand,
     MoveToCommand,
     LineToCommand,
+    LineToWithPowerCommand,
     State,
     OpsSectionStartCommand,
     OpsSectionEndCommand,
@@ -269,21 +270,20 @@ def test_scan_line_power_command_linearize():
 
     # Power changes from 100 to 200 after the first pixel.
     # The next two pixels are 200, so they are one segment.
-    # Expected: Set(100), LineTo(pixel 0 end), Set(200), LineTo(final end)
-    assert len(linearized) == 4
+    # Expected: LineToWithPowerCommand(100/255) to pixel 0 end,
+    #           LineToWithPowerCommand(200/255) to final end
+    assert len(linearized) == 2
 
     # Segment 1 (power 100/255 normalized)
-    assert isinstance(linearized[0], SetPowerCommand)
+    assert isinstance(linearized[0], LineToWithPowerCommand)
     assert linearized[0].power == pytest.approx(100.0 / 255.0)
-    assert isinstance(linearized[1], LineToCommand)
-    assert linearized[1].end == pytest.approx((1.0, 0.0, 5.0))
+    assert linearized[0].end == pytest.approx((1.0, 0.0, 5.0))
 
     # Segment 2 (power 200/255 normalized)
-    assert isinstance(linearized[2], SetPowerCommand)
-    assert linearized[2].power == pytest.approx(200.0 / 255.0)
     # This line covers the last two pixels and goes to the final end point
-    assert isinstance(linearized[3], LineToCommand)
-    assert linearized[3].end == pytest.approx((3.0, 0.0, 5.0))
+    assert isinstance(linearized[1], LineToWithPowerCommand)
+    assert linearized[1].power == pytest.approx(200.0 / 255.0)
+    assert linearized[1].end == pytest.approx((3.0, 0.0, 5.0))
 
 
 def test_scan_line_power_command_linearize_constant_power():
@@ -294,12 +294,11 @@ def test_scan_line_power_command_linearize_constant_power():
     )
     linearized = cmd.linearize(start_point)
 
-    # Should be one SetPower and one LineTo the final destination
-    assert len(linearized) == 2
-    assert isinstance(linearized[0], SetPowerCommand)
+    # With constant power, should be one LineToWithPowerCommand to the final destination
+    assert len(linearized) == 1
+    assert isinstance(linearized[0], LineToWithPowerCommand)
     assert linearized[0].power == pytest.approx(150.0 / 255.0)
-    assert isinstance(linearized[1], LineToCommand)
-    assert linearized[1].end == (5, 10, 0)
+    assert linearized[0].end == (5, 10, 0)
 
 
 def test_scan_line_power_command_linearize_empty():

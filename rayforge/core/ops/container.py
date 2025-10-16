@@ -21,6 +21,7 @@ from .commands import (
     MovingCommand,
     MoveToCommand,
     LineToCommand,
+    LineToWithPowerCommand,
     ArcToCommand,
     SetPowerCommand,
     SetCutSpeedCommand,
@@ -77,6 +78,11 @@ class Ops:
             return MoveToCommand(end=tuple(cmd_data["end"]))
         elif cmd_type == "LineToCommand":
             return LineToCommand(end=tuple(cmd_data["end"]))
+        elif cmd_type == "LineToWithPowerCommand":
+            return LineToWithPowerCommand(
+                end=tuple(cmd_data["end"]),
+                power=cmd_data["power"]
+            )
         elif cmd_type == "ArcToCommand":
             return ArcToCommand(
                 end=tuple(cmd_data["end"]),
@@ -191,6 +197,9 @@ class Ops:
 
             if isinstance(cmd, MovingCommand):
                 endpoints[i] = cmd.end
+                # LineToWithPowerCommand needs JSON since it has power attribute
+                if isinstance(cmd, LineToWithPowerCommand):
+                    state_marker_cmds_data[str(i)] = cmd.to_dict()
             else:
                 # Store state and marker command data for JSON serialization
                 state_marker_cmds_data[str(i)] = cmd.to_dict()
@@ -275,7 +284,11 @@ class Ops:
 
             end_tuple = tuple(endpoints[i])
 
-            if issubclass(CmdClass, (MoveToCommand, LineToCommand)):
+            if issubclass(CmdClass, LineToWithPowerCommand):
+                # LineToWithPowerCommand is handled via JSON (state_marker_cmds_data)
+                # because it has the power attribute, so skip here
+                continue
+            elif issubclass(CmdClass, (MoveToCommand, LineToCommand)):
                 cmd = CmdClass(end=end_tuple)
             elif issubclass(CmdClass, ArcToCommand):
                 arc_idx = arc_map[i]
